@@ -1,14 +1,20 @@
 <template>
   <div>
-    <div class="container" style="display: flex;">
+    <!--loader-->
+    <app-loader v-if="this.$store.getters.loader" />
+    <!--loader-->
+
+    <!--background-rain-->
+    <div class="background-rain" />
+    <!--background-rain-->
+
+    <div class="container container-flex">
       <!--анимационный блок-->
       <div id="three-container" />
       <!--анимационный блок-->
 
       <section class="poster">
-        <div data-js="glitch-image">
-          <img src="https://sun9-73.userapi.com/impf/z7JrUfHmc4CjxYMuuXfH5LFiz8sxyll9pEz-AA/nlcwiuvxJNQ.jpg?size=1567x886&quality=96&proxy=1&sign=e0b76ef3e66a757aeec688f65c4a5a15&type=album">
-        </div>
+        <div class="glitch" />
 
         <div class="poster__header">
           <h1 class="poster__header-title">
@@ -96,13 +102,12 @@
       <script src="../js/THREEAnimated.js" />
     </div>
 
-    <script src="../js/jquery.js" />
-    <script src="../js/3DCarousel.js" />
-    <div class="container" style="height: 500px; overflow: hidden">
+    <script :src="this.mobilSlider ? '../js/3DCarousel.js' : ''" />
+    <div class="container container-carousel">
       <!--3d Carousel-->
-      <div id="contentContainer" class="trans3d">
+      <div v-show="this.mobilSlider" id="contentContainer" class="trans3d">
         <section id="carouselContainer" class="trans3d">
-          <figure id="item1" class="carouselItem trans3d">
+          <figure id="item1" data-number="01" class="carouselItem trans3d carousel-cell">
             <div class="carouselItemInner trans3d">
               <div class="carousel-item__img">
                 <img src="@/static/img/kaneki.png" alt="kaneki">
@@ -118,7 +123,7 @@
                   <li>- еще что </li>
                 </ul>
                 <div class="poster__header-icon">
-                  <div class="poster__icon">
+                  <div class="poster__icon" @click="ThreeDModal($event)">
                     <svg
                       viewBox="0 0 50 50"
                       style=" fill:#000000;"
@@ -162,37 +167,37 @@
               </div>
             </div>
           </figure>
-          <figure id="item2" class="carouselItem trans3d">
+          <figure id="item2" data-number="02" class="carouselItem trans3d carousel-cell">
             <div class="carouselItemInner trans3d">
               2
             </div>
           </figure>
-          <figure id="item3" class="carouselItem trans3d">
+          <figure id="item3" data-number="03" class="carouselItem trans3d carousel-cell">
             <div class="carouselItemInner trans3d">
               3
             </div>
           </figure>
-          <figure id="item4" class="carouselItem trans3d">
+          <figure id="item4" data-number="04" class="carouselItem trans3d carousel-cell">
             <div class="carouselItemInner trans3d">
               4
             </div>
           </figure>
-          <figure id="item5" class="carouselItem trans3d">
+          <figure id="item5" data-number="05" class="carouselItem trans3d carousel-cell">
             <div class="carouselItemInner trans3d">
               5
             </div>
           </figure>
-          <figure id="item6" class="carouselItem trans3d">
+          <figure id="item6" data-number="06" class="carouselItem trans3d carousel-cell">
             <div class="carouselItemInner trans3d">
               6
             </div>
           </figure>
-          <figure id="item7" class="carouselItem trans3d">
+          <figure id="item7" data-number="07" class="carouselItem trans3d carousel-cell">
             <div class="carouselItemInner trans3d">
               7
             </div>
           </figure>
-          <figure id="item8" class="carouselItem trans3d">
+          <figure id="item8" data-number="08" class="carouselItem trans3d carousel-cell">
             <div class="carouselItemInner trans3d">
               8
             </div>
@@ -200,191 +205,391 @@
         </section>
       </div>
       <!--3d Carousel-->
+
+      <!--flickity-->
+      <no-ssr>
+        <flickity v-if="!this.mobilSlider" ref="flickity" :options="flickityOptions">
+          <div class="carousel-cell carouselItem carousel-cell" data-number="01">
+            <div class="carouselItemInner">
+              <div class="carousel-item__img">
+                <img src="@/static/img/kaneki.png" alt="kaneki">
+              </div>
+              <div class="carousel-item__info">
+                <div class="item-info__header">
+                  <h2>Токийский гуль</h2>
+                  <span>#1</span>
+                </div>
+                <ul class="item-info__text">
+                  <li>- цена</li>
+                  <li>- ткань</li>
+                  <li>- еще что </li>
+                </ul>
+                <div class="poster__header-icon">
+                  <div class="poster__icon" @click="ThreeDModal($event)">
+                    <svg
+                      viewBox="0 0 50 50"
+                      style=" fill:#000000;"
+                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-weight="none"
+                      font-size="none"
+                      text-anchor="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
+                      fill="none"
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-size="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-cell carouselItem carousel-cell" data-number="02">
+            <div class="carouselItemInner">
+              <div class="carousel-item__img">
+                <img src="@/static/img/kaneki.png" alt="kaneki">
+              </div>
+              <div class="carousel-item__info">
+                <div class="item-info__header">
+                  <h2>Токийский гуль</h2>
+                  <span>#2</span>
+                </div>
+                <ul class="item-info__text">
+                  <li>- цена</li>
+                  <li>- ткань</li>
+                  <li>- еще что </li>
+                </ul>
+                <div class="poster__header-icon">
+                  <div class="poster__icon" @click="ThreeDModal($event)">
+                    <svg
+                      viewBox="0 0 50 50"
+                      style=" fill:#000000;"
+                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-weight="none"
+                      font-size="none"
+                      text-anchor="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
+                      fill="none"
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-size="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-cell carouselItem carousel-cell" data-number="03">
+            <div class="carouselItemInner">
+              <div class="carousel-item__img">
+                <img src="@/static/img/kaneki.png" alt="kaneki">
+              </div>
+              <div class="carousel-item__info">
+                <div class="item-info__header">
+                  <h2>Токийский гуль</h2>
+                  <span>#3</span>
+                </div>
+                <ul class="item-info__text">
+                  <li>- цена</li>
+                  <li>- ткань</li>
+                  <li>- еще что </li>
+                </ul>
+                <div class="poster__header-icon">
+                  <div class="poster__icon" @click="ThreeDModal($event)">
+                    <svg
+                      viewBox="0 0 50 50"
+                      style=" fill:#000000;"
+                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-weight="none"
+                      font-size="none"
+                      text-anchor="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
+                      fill="none"
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-size="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-cell carouselItem carousel-cell" data-number="04">
+            <div class="carouselItemInner">
+              <div class="carousel-item__img">
+                <img src="@/static/img/kaneki.png" alt="kaneki">
+              </div>
+              <div class="carousel-item__info">
+                <div class="item-info__header">
+                  <h2>Токийский гуль</h2>
+                  <span>#4</span>
+                </div>
+                <ul class="item-info__text">
+                  <li>- цена</li>
+                  <li>- ткань</li>
+                  <li>- еще что </li>
+                </ul>
+                <div class="poster__header-icon">
+                  <div class="poster__icon" @click="ThreeDModal($event)">
+                    <svg
+                      viewBox="0 0 50 50"
+                      style=" fill:#000000;"
+                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-weight="none"
+                      font-size="none"
+                      text-anchor="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
+                      fill="none"
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-size="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-cell carouselItem carousel-cell" data-number="05">
+            <div class="carouselItemInner">
+              <div class="carousel-item__img">
+                <img src="@/static/img/kaneki.png" alt="kaneki">
+              </div>
+              <div class="carousel-item__info">
+                <div class="item-info__header">
+                  <h2>Токийский гуль</h2>
+                  <span>#5</span>
+                </div>
+                <ul class="item-info__text">
+                  <li>- цена</li>
+                  <li>- ткань</li>
+                  <li>- еще что </li>
+                </ul>
+                <div class="poster__header-icon">
+                  <div class="poster__icon" @click="ThreeDModal($event)">
+                    <svg
+                      viewBox="0 0 50 50"
+                      style=" fill:#000000;"
+                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-weight="none"
+                      font-size="none"
+                      text-anchor="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
+                  </div>
+                  <div class="poster__icon">
+                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
+                      fill="none"
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-size="none"
+                      style="mix-blend-mode: normal"
+                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </flickity>
+      </no-ssr>
+      <!--flickity-->
     </div>
+    <app-three-d-modal
+      v-if="item"
+      ref="threeDModal"
+      class="animate__zoomIn"
+      :item="item"
+      @closeModal="item = $event"
+    />
   </div>
 </template>
 
 <script>
+import AppThreeDModal from '@/components/ThreeDModal'
+import AppLoader from '@/components/Loader'
+import 'animate.css'
+
 export default {
+  components: {
+    AppThreeDModal,
+    AppLoader
+  },
+  data () {
+    return {
+      item: null,
+      mobilSlider: true,
+      flickityOptions: {
+        pageDots: false,
+        prevNextButtons: false,
+        lazyLoad: 1,
+        wrapAround: true
+      }
+    }
+  },
   mounted () {
+    // Loader
+    this.$store.commit('DISABLE_LOADER')
+    this.$store.dispatch('enablesScroll')
+    // Loader --
+
+    // Slider mobil
+    if (document.body.offsetWidth < 975) {
+      this.mobilSlider = false
+    }
+    // Slider mobil --
+
     // Timer
-    setClock('.timer', '2021-02-30')
-
-    function getTimeRemaining (endtime) {
-      const t = Date.parse(endtime) - Date.parse(new Date())
-      const days = Math.floor((t / (1000 * 60 * 60 * 24)))
-      const seconds = Math.floor((t / 1000) % 60)
-      const minutes = Math.floor((t / 1000 / 60) % 60)
-      const hours = Math.floor((t / (1000 * 60 * 60) % 24))
-
-      return {
-        total: t,
-        days,
-        hours,
-        minutes,
-        seconds
-      }
-    }
-
-    function getZero (num) {
-      if (num >= 0 && num < 10) {
-        return '0' + num
-      } else {
-        return num
-      }
-    }
-
-    function setClock (selector, endtime) {
-      const timer = document.querySelector(selector)
-      const days = timer.querySelector('#days')
-      const hours = timer.querySelector('#hours')
-      const minutes = timer.querySelector('#minutes')
-      const seconds = timer.querySelector('#seconds')
-      const timeInterval = setInterval(updateClock, 1000)
-
-      updateClock()
-
-      function updateClock () {
-        const t = getTimeRemaining(endtime)
-
-        days.innerHTML = getZero(t.days)
-        hours.innerHTML = getZero(t.hours)
-        minutes.innerHTML = getZero(t.minutes)
-        seconds.innerHTML = getZero(t.seconds)
-
-        if (t.total <= 0) {
-          clearInterval(timeInterval)
-        }
-      }
-    }
+    return this.$store.getters.timer
     // Timer --
-
-    // Glich
-    (function (window) {
-      'use strict'
-
-      let _canvas, _context
-      let _image, _imageData
-
-      const effectList = [
-        function glitch (context, width, height) {
-          const imageData = context.getImageData(0, 0, width, height)
-          const data = imageData.data
-          const length = width * height
-          const factor = Math.random() * 10
-
-          const randR = Math.floor(Math.random() * factor)
-          const randG = Math.floor(Math.random() * factor) * 3
-          const randB = Math.floor(Math.random() * factor)
-
-          for (let i = 0; i < length; i++) {
-            let r = data[(i + randR) * 4]
-            let g = data[(i + randG) * 4 + 1]
-            let b = data[(i + randB) * 4 + 2]
-            if (r + g + b === 0) { r = g = b = 255 }
-
-            data[i * 4] = r
-            data[i * 4 + 1] = g
-            data[i * 4 + 2] = b
-            data[i * 4 + 3] = 255
-          }
-
-          context.putImageData(imageData, 0, 0)
-        },
-        function glitchWave (context, width, height) {
-          const renderLineHeight = Math.random() * height
-          const cuttingHeight = 5
-          const imageData = context.getImageData(0, renderLineHeight, width, cuttingHeight)
-          context.putImageData(imageData, 0, renderLineHeight - 10)
-        },
-        function glitchSlip (context, width, height) {
-          const waveDistance = 100
-          const startHeight = height * Math.random()
-          const endHeight = startHeight + 30 + (Math.random() * 40)
-          for (let h = startHeight; h < endHeight; h++) {
-            if (Math.random() < 0.1) { h++ }
-            const imageData = context.getImageData(0, h, width, 1)
-            context.putImageData(imageData, Math.random() * waveDistance - (waveDistance * 0.5), h)
-          }
-        },
-        function glitchColor (context, width, height) {
-          const waveDistance = 30
-          const startHeight = height * Math.random()
-          const endHeight = startHeight + 30 + (Math.random() * 40)
-          const imageData = context.getImageData(0, startHeight, width, endHeight)
-          const length = width * height
-          const data = imageData.data
-
-          let r = 0
-          let g = 0
-          let b = 0
-
-          for (let i = 0; i < length; i++) {
-            if (i % width === 0) {
-              r = i + Math.floor((Math.random() - 0.5) * waveDistance)
-              g = i + Math.floor((Math.random() - 0.5) * waveDistance)
-              b = i + Math.floor((Math.random() - 0.5) * waveDistance)
-            }
-
-            data[i * 4] = data[r * 4]
-            data[i * 4 + 1] = data[g * 4 + 1]
-            data[i * 4 + 2] = data[b * 4 + 2]
-          }
-
-          context.putImageData(imageData, 0, startHeight)
-        }
-      ]
-
-      function init () {
-        const imageBoard = document.querySelector('[data-js="glitch-image"]')
-        _image = imageBoard.querySelector('img')
-        _canvas = document.createElement('canvas')
-        _context = _canvas.getContext('2d')
-
-        imageBoard.appendChild(_canvas)
-
-        _imageData = new Image()
-        _imageData.crossOrigin = 'Anonymous'
-        _imageData.onload = function (event) {
-          window.addEventListener('resize', onResize, false)
-          window.dispatchEvent(new Event('resize'))
-          window.requestAnimationFrame(render)
-        }
-        _imageData.src = _image.getAttribute('src')
-      }
-
-      function onResize () {
-        _canvas.width = _image.width
-        _canvas.height = _image.height
-      }
-
-      function render (timestamp) {
-        const width = _canvas.width
-        const height = _canvas.height
-
-        _context.clearRect(0, 0, width, height)
-        _context.drawImage(_imageData, 0, 0, _image.width, _image.height)
-
-        if (Math.random() > 0.5) {
-          getRandomValue(effectList)(_context, width, height)
-        }
-
-        window.requestAnimationFrame(render)
-      }
-
-      function getRandomValue (array) {
-        return array[Math.floor(Math.random() * array.length)]
-      }
-
-      document.addEventListener('DOMContentLoaded', init)
-    })(window)
-    // Glich --
+  },
+  methods: {
+    ThreeDModal (e) {
+      new Promise((resolve) => {
+        this.$store.commit('ENABLE_LOADER')
+        setTimeout(() => { resolve() }, 2000)
+      })
+        .then(() => {
+          const parentCard = e.target.closest('.carouselItem')
+          this.item = parentCard.id
+          this.$store.dispatch('disableScroll')
+        })
+        .then(() => {
+          this.$store.commit('DISABLE_LOADER')
+        })
+        .catch(() => {
+          throw Error
+        })
+    }
   }
 }
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Texturina:wght@500&display=swap');
+@font-face {
+  font-family: 'Heartless';
+  src: url("../static/fonts/flash.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 
 @mixin infoHydi{
   padding-left: 4px;
@@ -396,20 +601,72 @@ export default {
   }
 }
 
+.background-rain{
+  background: url('../static/img/rain.gif');
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: fixed;
+  z-index: -4;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  &:after {
+    content: '';
+    position: absolute;
+    z-index: -3;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.container-flex{
+  display: flex;
+  flex-wrap: wrap;
+
+  @media (min-width: 970px) {
+    flex-wrap: nowrap;
+  }
+}
+
+.container-carousel{
+  height: 500px;
+  overflow: hidden;
+}
+
+// объемный блок слева / анимация
 #three-container{
   display: inline-block;
   position: relative;
   height: min-content;
-  flex-basis: 45%;
+  flex-basis: 100%;
+  max-height: 430px;
+  margin: 0 auto;
 
   canvas {
     width: 100% !important;
     object-fit: cover;
     overflow: visible;
     border: 12px solid #ffffffa8;
-    max-height: 400px;
-    max-width: 600px;
     cursor: w-resize;
+    position: relative;
+    max-height: 430px;
+    padding: 15px 20px;
+
+    @media (max-width: 390px) {
+      height: 340px !important;
+      padding: 0;
+    }
+
+    @media (min-width: 970px) {
+      max-height: 400px;
+      max-width: 600px;
+    }
   }
 
   &:after {
@@ -423,15 +680,34 @@ export default {
     background-color:rgba(255, 255, 255, .75);
     filter: blur(13px);
   }
+
+  @media (max-width: 390px) {
+    height: 340px;
+  }
+
+  @media (min-width: 540px) {
+    max-width: 100%;
+    flex-basis: 90%;
+    margin: 0 auto 40px;
+  }
+
+  @media (min-width: 970px) {
+    min-width: 460px;
+    flex-basis: 45%;
+    margin-bottom: 0;
+    margin-right: 15px;
+    margin-left: 0;
+  }
 }
+// объемный блок слева / анимация --
 
 .poster{
   border: 12px solid rgba(71, 69, 69, 0.66);
-  margin-left: 3%;
-  flex-basis: 52%;
+  flex-basis: 100%;
   position: relative;
   color: #ffffff;
   padding: 20px 15px;
+  margin-top: 25px;
 
   display: flex;
   flex-direction: column;
@@ -448,6 +724,21 @@ export default {
     background-color: rgb(79, 70, 70);
     filter: blur(2px) brightness(0.7);
   }
+
+  @media (min-width: 540px) {
+    max-width: 100%;
+    flex-basis: 90%;
+    margin: 0 auto 40px;
+  }
+
+  @media (min-width: 700px) {
+    flex-basis: 90%;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 970px) {
+    flex-basis: 52%;
+  }
 }
 
 .poster__header{
@@ -458,9 +749,19 @@ export default {
 }
 
 .poster__header-title{
-  font-size: 19px;
-  font-family: Texturina;
+  font-family: Heartless;
   font-weight: 500;
+  letter-spacing: 3px;
+  font-size: 35px;
+
+  @media (min-width: 468px) {
+    margin-right: 10px;
+  }
+
+  @media (min-width: 995px) {
+    font-size: 42px;
+    margin-right: 0;
+  }
 }
 
 .poster__header-icon{
@@ -510,12 +811,16 @@ export default {
 
 .poster__descr{
   font-size: 17px;
-  margin-top: 20px;
+  margin: 20px 0;
 }
 
 .poster__footer{
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: 465px) {
+    flex-direction: column;
+  }
 }
 
 .go-to-product{
@@ -554,45 +859,92 @@ export default {
   font-size: 26px;
   letter-spacing: 3px;
   margin-right: 10px;
+
+  @media (max-width: 465px) {
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 490px) {
+    font-size: 24px;
+  }
 }
 // Timer
 
 // Glitch
-[data-js="glitch-image"] {
+.glitch {
   position: absolute;
   width: 100%;
   height: 100%;
+  background: url("https://sun9-73.userapi.com/impf/z7JrUfHmc4CjxYMuuXfH5LFiz8sxyll9pEz-AA/nlcwiuvxJNQ.jpg?size=1567x886&quality=96&proxy=1&sign=e0b76ef3e66a757aeec688f65c4a5a15&type=album ");
+  background-size: cover;
+  left: 0;
+  top: 0;
+  animation: 420s GlitchTime infinite;
+  animation-delay: 6s;
   z-index: -5;
-  animation: TG 420s infinite;
-  animation-delay: 8s;
 
-  img{
-    width: 100%;
-    height: 100%;
-    top: -20px;
-    left: -15px;
-    position: absolute;
-    object-fit: cover;
-  }
-
-  @keyframes TG {
-    2%, 100% {
-      z-index: -5;
-    }
-    0% {
-      z-index: 5;
-    }
+  @media (max-width: 410px) {
+    background-position: -100%;
   }
 }
 
-[data-js="glitch-image"] canvas {
+@keyframes GlitchTime {
+  1%, 100% {
+    z-index: -5;
+  }
+  0% {
+    z-index: 5;
+  }
+}
+
+.glitch:before {
+  content:'';
   position: absolute;
-  top: -20px;
-  left: -15px;
-  z-index: 1;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  background: url("https://sun9-73.userapi.com/impf/z7JrUfHmc4CjxYMuuXfH5LFiz8sxyll9pEz-AA/nlcwiuvxJNQ.jpg?size=1567x886&quality=96&proxy=1&sign=e0b76ef3e66a757aeec688f65c4a5a15&type=album ");
+  background-size: cover;
+  left: 0;
+  top: 0;
+
+  opacity:0.8;
+  mix-blend-mode: hard-light;
+  animation: Glitch .2s infinite;
+}
+
+@keyframes Glitch {
+  0% {
+    background-position: 0 0;
+    filter: hue-rotate(70deg);
+  }
+  10% {
+    background-position: 60px 0;
+  }
+  20% {
+    background-position: -60px 0;
+  }
+  30% {
+    background-position: 12px 0;
+  }
+  40% {
+    background-position: -16px 0;
+  }
+  50% {
+    background-position: -16px 0;
+  }
+  60% {
+    background-position: -52px 0;
+  }
+  70% {
+    background-position: 0 42px;
+  }
+  80% {
+    background-position: -40px -30px;
+  }
+  100% {
+    background-position: 0px -30px;
+    filter: hue-rotate(360deg);
+  }
 }
 // Glich --
 
@@ -637,6 +989,21 @@ export default {
   margin-left:-160px;
   margin-top:-90px;
   visibility:hidden;
+
+  &:before{
+    content: attr(data-number);
+    color: #4f4c4c;
+    font-size: 70px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 13px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 0;
+    transform: translate(-50%, -50%) scaleX(-1) ;
+    backface-visibility: visible;
+  }
 }
 
 .carouselItemInner {
@@ -681,6 +1048,7 @@ export default {
     top: -30px;
     backface-visibility: hidden;
     transform: translate3d(0px, 0px, 11px);
+    filter: blur(1px);
   }
 }
 
@@ -690,6 +1058,7 @@ export default {
   backface-visibility: hidden;
   display: flex;
   flex-direction: column;
+  z-index: 1;
 }
 
 .item-info__header{

@@ -4,36 +4,14 @@ let mouseY = 0
 let mouseZ = 0
 let addX = 0
 
-// fps counter created by: https://gist.github.com/sharkbrainguy/1156092,
-// no need to create my own :)
-const fps_counter = {
-
-  tick () {
-    // this has to clone the array every tick so that
-    // separate instances won't share state
-    this.times = this.times.concat(+new Date())
-    let seconds; const times = this.times
-
-    if (times.length > this.span + 1) {
-      times.shift() // ditch the oldest time
-      seconds = (times[times.length - 1] - times[0]) / 1000
-      return Math.round(this.span / seconds)
-    } else { return null }
-  },
-
-  times: [],
-  span: 20
-}
-const counter = Object.create(fps_counter)
-
-$(document).ready(init)
+document.addEventListener('DOMContentLoaded', init)
 
 function init () {
-  w = $(window)
-  container = $('#contentContainer')
-  carousel = $('#carouselContainer')
-  item = $('.carouselItem')
-  itemLength = $('.carouselItem').length
+  w = document.window
+  container = document.querySelector('#contentContainer')
+  carousel = document.querySelector('#carouselContainer')
+  item = document.querySelectorAll('.carouselItem')
+  itemLength = document.querySelectorAll('.carouselItem').length
   rY = 360 / itemLength
   radius = Math.round((250) / Math.tan(Math.PI / itemLength))
 
@@ -44,8 +22,8 @@ function init () {
   // create carousel item props
 
   for (let i = 0; i < itemLength; i++) {
-    const $item = item.eq(i)
-    const $block = $item.find('.carouselItemInner')
+    const $item = item[i]
+    const $block = $item.querySelector('.carouselItemInner')
 
     // thanks @chrisgannon!
     TweenMax.set($item, { rotationY: rY * i, z: radius, transformOrigin: '50% 50% ' + -radius + 'px' })

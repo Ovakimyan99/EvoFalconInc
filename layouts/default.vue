@@ -205,6 +205,10 @@ body {
   border-bottom: 1px solid #DCE1E7;
   background-color: #242424;
   margin-bottom: 50px;
+
+  @media (max-width: 540px) {
+    margin-bottom: 25px;
+  }
 }
 .header__body {
   position: relative;

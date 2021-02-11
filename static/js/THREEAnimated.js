@@ -19,7 +19,7 @@ function init () {
   const l1 = new THREE.ImageLoader()
   l1.setCrossOrigin('Anonymous')
   slide.setImage(
-    l1.load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/winter.jpg')
+    l1.load('../img/fon1.jpg')
   )
   root.scene.add(slide)
 
@@ -27,7 +27,7 @@ function init () {
   const l2 = new THREE.ImageLoader()
   l2.setCrossOrigin('Anonymous')
   slide2.setImage(
-    l2.load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/spring.jpg')
+    l2.load('../img/fon2.jpg')
   )
   root.scene.add(slide2)
 
@@ -447,16 +447,16 @@ function createTweenScrubber (tween, seekSpeed) {
     }
   })
   // mobile
-  window.addEventListener('touchstart', function (e) {
+  document.querySelector('#three-container').addEventListener('touchstart', function (e) {
     _cx = e.touches[0].clientX
     stop()
     e.preventDefault()
   })
-  window.addEventListener('touchend', function (e) {
+  document.querySelector('#three-container').addEventListener('touchend', function (e) {
     resume()
     e.preventDefault()
   })
-  window.addEventListener('touchmove', function (e) {
+  document.querySelector('#three-container').addEventListener('touchmove', function (e) {
     const cx = e.touches[0].clientX
     const dx = cx - _cx
     _cx = cx

@@ -19,11 +19,13 @@
   "devDependencies": {
     "@nuxtjs/eslint-config": "^5.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",
+    "animate.css": "^4.1.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.18.0",
     "eslint-plugin-nuxt": "^2.0.0",
     "eslint-plugin-vue": "^7.5.0",
     "node-sass": "^4.14.1",
-    "sass-loader": "^7.3.1"
+    "sass-loader": "^7.3.1",
+    "vue-flickity": "^1.2.1"
   }
 }
