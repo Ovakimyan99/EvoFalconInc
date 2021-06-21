@@ -1,596 +1,365 @@
 <template>
-  <div>
+  <main class="main">
     <!--loader-->
     <app-loader v-if="this.$store.getters.loader" />
     <!--loader-->
 
-    <!--background-rain-->
-    <div class="background-rain" />
-    <!--background-rain-->
-
-    <div class="container container-flex">
-      <!--анимационный блок-->
-      <div id="three-container" />
-      <!--анимационный блок-->
-
-      <section class="poster">
-        <div class="glitch" />
-
-        <div class="poster__header">
-          <h1 class="poster__header-title">
-            Hoody Tokyo Ghoul
+    <!--first screen-->
+    <div class="container-flex first-screen">
+      <section :id="this.sliderCardData.id" ref="poster" class="poster container" :data-id="this.sliderCardData.id">
+        <div class="poster-slider">
+          <div class="slider-border">
+            <img :src="this.sliderCardData.substrateUrl" alt="подложка">
+          </div>
+          <img
+            class="poster-slider__img animate__animated"
+            :src="this.urlImgFrontAndBack[0]"
+            :alt="this.sliderCardData.name"
+            :title="this.sliderCardData.name"
+          >
+          <img
+            hidden
+            class="poster-slider__img animate__animated poster-slider__img-substrate"
+            :src="this.urlImgFrontAndBack[1]"
+            :alt="this.sliderCardData.name"
+            :title="this.sliderCardData.name"
+          >
+          <div class="poster-slider-nav">
+            <span @click="newPoster($event = 'prev')"><app-red-button data-dark :text="'❮'" class="slider-nav-btn" /></span>
+            <span @click="revertCard($event)"><app-red-button data-dark :text="'перевернуть'" /></span>
+            <span @click="newPoster($event = 'next')"><app-red-button data-dark :text="'❯'" class="slider-nav-btn" /></span>
+          </div>
+        </div>
+        <div class="poster-info">
+          <h1 class="poster-info__title">
+            {{ this.sliderCardData.name }}
           </h1>
-
-          <div class="poster__header-icon">
-            <div class="poster__icon">
-              <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
-                fill="none"
-                fill-rule="nonzero"
-                stroke="none"
-                stroke-width="1"
-                stroke-linecap="butt"
-                stroke-linejoin="miter"
-                stroke-miterlimit="10"
-                stroke-dasharray=""
-                stroke-dashoffset="0"
-                font-family="none"
-                font-weight="none"
-                font-size="none"
-                text-anchor="none"
-                style="mix-blend-mode: normal"
-              ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
+          <div class="poster__descr">
+            <p class="poster__text">
+              {{ this.sliderCardData.text }}
+            </p>
+            <ul class="poster__text poster__list">
+              <li v-for="li of this.sliderCardData.info" :key="li">
+                {{ li }}
+              </li>
+            </ul>
+          </div>
+          <div class="poster__descr">
+            <div class="poster__timer">
+              <span class="timer-countdown">До дропа осталось:</span>
+              <time v-if="this.timeLeft && this.timeLeft > 0" class="timer">
+                <div class="timer__block">
+                  <span id="days">{{ Math.floor((this.timeLeft / (1000 * 60 * 60 * 24))) >= 10 ? Math.floor((this.timeLeft / (1000 * 60 * 60 * 24))) : `0${Math.floor((this.timeLeft / (1000 * 60 * 60 * 24)))}` }}</span> :
+                </div>
+                <div class="timer__block">
+                  <span id="hours">{{ Math.floor((this.timeLeft / (1000 * 60 * 60) % 24)) >= 10 ? Math.floor((this.timeLeft / (1000 * 60 * 60) % 24)) : `0${Math.floor((this.timeLeft / (1000 * 60 * 60) % 24))}` }}</span> :
+                </div>
+                <div class="timer__block">
+                  <span id="minutes">{{ Math.floor((this.timeLeft / 1000 / 60) % 60) >= 10 ? Math.floor((this.timeLeft / 1000 / 60) % 60) : `0${Math.floor((this.timeLeft / 1000 / 60) % 60)}` }}</span> :
+                </div>
+                <div class="timer__block">
+                  <span id="seconds">{{ Math.floor((this.timeLeft / 1000) % 60) >= 10 ? Math.floor((this.timeLeft / 1000) % 60) : `0${Math.floor((this.timeLeft / 1000) % 60)}` }}</span>
+                </div>
+              </time>
+              <div v-else class="poster-released">
+                released
+              </div>
             </div>
-            <div class="poster__icon">
-              <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
-                fill="none"
-                fill-rule="nonzero"
-                stroke="none"
-                stroke-width="1"
-                stroke-linecap="butt"
-                stroke-linejoin="miter"
-                stroke-miterlimit="10"
-                stroke-dasharray=""
-                stroke-dashoffset="0"
-                font-family="none"
-                font-size="none"
-                style="mix-blend-mode: normal"
-              ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
-              </svg>
+            <div class="poster-price">
+              <span>{{ this.sliderCardData.priceDrop }}</span>
+              <span v-if="this.realDate > 0">{{ this.sliderCardData.pricePreorder }}</span>
             </div>
           </div>
-        </div>
-
-        <div class="poster__body">
-          <span>Параметры:</span>
-          <ul class="poster__advantages">
-            <li>- цена</li>
-            <li>- ткань</li>
-            <li>- нашивки</li>
-          </ul>
-
-          <p class="poster__descr">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores aspernatur dolore doloribus eos explicabo illum, modi nesciunt nihil optio praesentium quaerat, quos totam, voluptate voluptates?
-          </p>
-        </div>
-
-        <div class="poster__footer">
-          <div class="poster__timer">
-            <span>До дропа осталось:</span>
-            <div class="timer">
-              <div class="timer__block">
-                <span id="days">12</span> :
-              </div>
-              <div class="timer__block">
-                <span id="hours">20</span> :
-              </div>
-              <div class="timer__block">
-                <span id="minutes">56</span> :
-              </div>
-              <div class="timer__block">
-                <span id="seconds">20</span>
-              </div>
-            </div>
+          <div class="poster__descr">
+            <span class="sold-out">SOLD OUT</span>
+            <span @click="CardInfoModal($event)"><app-red-button :text="'ПОДРОБНЕЕ'" /></span>
           </div>
-          <a href="#" class="go-to-product">Перейти к товару <span>&#8594;</span></a>
         </div>
       </section>
-
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r77/three.min.js" />
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.4/TweenMax.min.js" />
-      <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/bas.js" />
-      <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/OrbitControls-2.js" />
-      <script src="../js/THREEAnimated.js" />
     </div>
+    <!--first screen-->
 
-    <script :src="this.mobilSlider ? '../js/3DCarousel.js' : ''" />
-    <div class="container container-carousel">
-      <!--3d Carousel-->
-      <div v-show="this.mobilSlider" id="contentContainer" class="trans3d">
-        <section id="carouselContainer" class="trans3d">
-          <figure id="item1" data-number="01" class="carouselItem trans3d carousel-cell">
-            <div class="carouselItemInner trans3d">
-              <div class="carousel-item__img">
-                <img src="@/static/img/kaneki.png" alt="kaneki">
-              </div>
-              <div class="carousel-item__info">
-                <div class="item-info__header">
-                  <h2>Токийский гуль</h2>
-                  <span>#1</span>
-                </div>
-                <ul class="item-info__text">
-                  <li>- цена</li>
-                  <li>- ткань</li>
-                  <li>- еще что </li>
-                </ul>
-                <div class="poster__header-icon">
-                  <div class="poster__icon" @click="ThreeDModal($event)">
-                    <svg
-                      viewBox="0 0 50 50"
-                      style=" fill:#000000;"
-                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-weight="none"
-                      font-size="none"
-                      text-anchor="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
-                      fill="none"
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-size="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </figure>
-          <figure id="item2" data-number="02" class="carouselItem trans3d carousel-cell">
-            <div class="carouselItemInner trans3d">
-              2
-            </div>
-          </figure>
-          <figure id="item3" data-number="03" class="carouselItem trans3d carousel-cell">
-            <div class="carouselItemInner trans3d">
-              3
-            </div>
-          </figure>
-          <figure id="item4" data-number="04" class="carouselItem trans3d carousel-cell">
-            <div class="carouselItemInner trans3d">
-              4
-            </div>
-          </figure>
-          <figure id="item5" data-number="05" class="carouselItem trans3d carousel-cell">
-            <div class="carouselItemInner trans3d">
-              5
-            </div>
-          </figure>
-          <figure id="item6" data-number="06" class="carouselItem trans3d carousel-cell">
-            <div class="carouselItemInner trans3d">
-              6
-            </div>
-          </figure>
-          <figure id="item7" data-number="07" class="carouselItem trans3d carousel-cell">
-            <div class="carouselItemInner trans3d">
-              7
-            </div>
-          </figure>
-          <figure id="item8" data-number="08" class="carouselItem trans3d carousel-cell">
-            <div class="carouselItemInner trans3d">
-              8
-            </div>
-          </figure>
-        </section>
+    <app-three-d-carousel />
+
+    <section class="delivery">
+      <span class="delivery-figure-left"></span>
+      <h2 class="page-title">
+        все о доставке all about delivery
+      </h2>
+      <div class="delivery-info-wrapper">
+        <article class="delivery-info">
+          <img src="@/static/img/other/delivery/post-office.svg" alt="Доставка почтой России" class="delivery-info__img">
+          <h3 class="delivery-info__text">
+            почта<br>россии
+          </h3>
+        </article>
+        <article class="delivery-info">
+          <img src="@/static/img/other/delivery/email.svg" alt="Доставка СДЭК" class="delivery-info__img">
+          <h3 class="delivery-info__text">
+            сдэк
+          </h3>
+        </article>
+        <article class="delivery-info">
+        <img src="@/static/img/other/delivery/city.svg" alt="Самовывоз в МСК" class="delivery-info__img">
+        <h3 class="delivery-info__text">
+          самовывоз<br>в москве
+        </h3>
+      </article>
       </div>
-      <!--3d Carousel-->
+      <div class="delivery-descr">
+        <p class="delivery-descr__text">Отправка товара производится в течение 3-4 дней после оплаты, если товар есть в наличии, то есть исключения - это товары на стадии предзаказов.</p>
+        <p class="delivery-descr__text">При доставке почтой России, как показала практика, товар едет не больше 7 дней.</p>
+        <p class="delivery-descr__text">СДЭК доставляет быстрее, чем почта России и если Вам нужно на руках иметь одежду в течение 1-2 дней, то это наилучший вариант.</p>
+        <p class="delivery-descr__text">Также можете забрать Ваш заказ прямо у меня из рук, если Вы живете в Москве: личные встречи никто не отменял : )</p>
+      </div>
+      <span class="delivery-figure-right"></span>
+    </section>
 
-      <!--flickity-->
-      <no-ssr>
-        <flickity v-if="!this.mobilSlider" ref="flickity" :options="flickityOptions">
-          <div class="carousel-cell carouselItem carousel-cell" data-number="01">
-            <div class="carouselItemInner">
-              <div class="carousel-item__img">
-                <img src="@/static/img/kaneki.png" alt="kaneki">
-              </div>
-              <div class="carousel-item__info">
-                <div class="item-info__header">
-                  <h2>Токийский гуль</h2>
-                  <span>#1</span>
-                </div>
-                <ul class="item-info__text">
-                  <li>- цена</li>
-                  <li>- ткань</li>
-                  <li>- еще что </li>
-                </ul>
-                <div class="poster__header-icon">
-                  <div class="poster__icon" @click="ThreeDModal($event)">
-                    <svg
-                      viewBox="0 0 50 50"
-                      style=" fill:#000000;"
-                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-weight="none"
-                      font-size="none"
-                      text-anchor="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
-                      fill="none"
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-size="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-cell carouselItem carousel-cell" data-number="02">
-            <div class="carouselItemInner">
-              <div class="carousel-item__img">
-                <img src="@/static/img/kaneki.png" alt="kaneki">
-              </div>
-              <div class="carousel-item__info">
-                <div class="item-info__header">
-                  <h2>Токийский гуль</h2>
-                  <span>#2</span>
-                </div>
-                <ul class="item-info__text">
-                  <li>- цена</li>
-                  <li>- ткань</li>
-                  <li>- еще что </li>
-                </ul>
-                <div class="poster__header-icon">
-                  <div class="poster__icon" @click="ThreeDModal($event)">
-                    <svg
-                      viewBox="0 0 50 50"
-                      style=" fill:#000000;"
-                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-weight="none"
-                      font-size="none"
-                      text-anchor="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
-                      fill="none"
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-size="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-cell carouselItem carousel-cell" data-number="03">
-            <div class="carouselItemInner">
-              <div class="carousel-item__img">
-                <img src="@/static/img/kaneki.png" alt="kaneki">
-              </div>
-              <div class="carousel-item__info">
-                <div class="item-info__header">
-                  <h2>Токийский гуль</h2>
-                  <span>#3</span>
-                </div>
-                <ul class="item-info__text">
-                  <li>- цена</li>
-                  <li>- ткань</li>
-                  <li>- еще что </li>
-                </ul>
-                <div class="poster__header-icon">
-                  <div class="poster__icon" @click="ThreeDModal($event)">
-                    <svg
-                      viewBox="0 0 50 50"
-                      style=" fill:#000000;"
-                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-weight="none"
-                      font-size="none"
-                      text-anchor="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
-                      fill="none"
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-size="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-cell carouselItem carousel-cell" data-number="04">
-            <div class="carouselItemInner">
-              <div class="carousel-item__img">
-                <img src="@/static/img/kaneki.png" alt="kaneki">
-              </div>
-              <div class="carousel-item__info">
-                <div class="item-info__header">
-                  <h2>Токийский гуль</h2>
-                  <span>#4</span>
-                </div>
-                <ul class="item-info__text">
-                  <li>- цена</li>
-                  <li>- ткань</li>
-                  <li>- еще что </li>
-                </ul>
-                <div class="poster__header-icon">
-                  <div class="poster__icon" @click="ThreeDModal($event)">
-                    <svg
-                      viewBox="0 0 50 50"
-                      style=" fill:#000000;"
-                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-weight="none"
-                      font-size="none"
-                      text-anchor="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
-                      fill="none"
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-size="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-cell carouselItem carousel-cell" data-number="05">
-            <div class="carouselItemInner">
-              <div class="carousel-item__img">
-                <img src="@/static/img/kaneki.png" alt="kaneki">
-              </div>
-              <div class="carousel-item__info">
-                <div class="item-info__header">
-                  <h2>Токийский гуль</h2>
-                  <span>#5</span>
-                </div>
-                <ul class="item-info__text">
-                  <li>- цена</li>
-                  <li>- ткань</li>
-                  <li>- еще что </li>
-                </ul>
-                <div class="poster__header-icon">
-                  <div class="poster__icon" @click="ThreeDModal($event)">
-                    <svg
-                      viewBox="0 0 50 50"
-                      style=" fill:#000000;"
-                    ><path d="M 25 2 C 12.309288 2 2 12.309297 2 25 C 2 37.690703 12.309288 48 25 48 C 37.690712 48 48 37.690703 48 25 C 48 12.309297 37.690712 2 25 2 z M 25 4 C 36.609833 4 46 13.390175 46 25 C 46 36.609825 36.609833 46 25 46 C 13.390167 46 4 36.609825 4 25 C 4 13.390175 13.390167 4 25 4 z M 16.806641 15.998047 C 11.769641 15.998047 11.318969 20.523047 11.292969 21.623047 L 13.421875 21.623047 C 13.453875 20.865047 13.809641 17.914063 16.806641 17.914062 C 19.613641 17.914062 20 19.828156 20 20.785156 C 20 21.264156 19.709328 23.658203 16.611328 23.658203 L 15.740234 23.658203 L 15.740234 25.476562 C 16.127234 25.380562 16.514047 25.380859 16.998047 25.380859 C 17.481047 25.380859 20.773438 25.477422 20.773438 28.732422 C 20.773438 31.891422 17.385344 32.179688 16.902344 32.179688 C 15.186344 32.179688 13.198672 31.148047 13.138672 28.373047 L 11 28.373047 C 11.019 29.755047 11.444344 34 16.902344 34 C 17.967344 34 23 33.713672 23 28.638672 C 23 25.479672 20.870641 24.520125 19.806641 24.328125 L 19.806641 24.232422 C 20.484641 23.850422 22.226563 22.700453 22.226562 20.689453 C 22.226562 19.923453 22.033641 15.998047 16.806641 15.998047 z M 26 16 L 26 34 L 31.505859 34 C 36.857859 34 40 30.670141 40 24.994141 C 40 19.331141 36.844859 16 31.505859 16 L 26 16 z M 28 18 L 31.505859 18 C 36.873859 18 38 21.803141 38 24.994141 C 38 28.190141 36.873859 32 31.505859 32 L 28 32 L 28 18 z" /></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style="fill:#000000"><g
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-weight="none"
-                      font-size="none"
-                      text-anchor="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#ffffff"><path fill="#000000" d="M53.75,25.08333c-21.70625,0 -39.41667,17.71042 -39.41667,39.41667c0,14.67789 11.06406,28.49789 24.55143,42.67106c13.48738,14.17317 30.08859,28.52788 43.31494,41.75423c2.0991,2.09823 5.50149,2.09823 7.60059,0c13.22635,-13.22635 29.82756,-27.58106 43.31494,-41.75423c13.48737,-14.17317 24.55143,-27.99318 24.55143,-42.67106c0,-21.70625 -17.71042,-39.41667 -39.41667,-39.41667c-12.45723,0 -23.30306,6.68825 -32.25,18.04964c-8.94694,-11.36139 -19.79277,-18.04964 -32.25,-18.04964z" /></g></g></svg>
-                  </div>
-                  <div class="poster__icon">
-                    <svg viewBox="0 0 172 172" style=" fill:#000000;"><g
-                      fill="none"
-                      fill-rule="nonzero"
-                      stroke="none"
-                      stroke-width="1"
-                      stroke-linecap="butt"
-                      stroke-linejoin="miter"
-                      stroke-miterlimit="10"
-                      stroke-dasharray=""
-                      stroke-dashoffset="0"
-                      font-family="none"
-                      font-size="none"
-                      style="mix-blend-mode: normal"
-                    ><path d="M0,172v-172h172v172z" fill="none" /><g fill="#000000"><path d="M31.63411,14.30534l-24.43945,0.12598l0.06999,14.33333l14.83724,-0.06999l23.61361,56.64746l-8.5804,13.73145c-2.86667,4.58667 -3.01493,10.38036 -0.39193,15.10319c2.623,4.72283 7.59991,7.65657 13.00358,7.65657h86.41992v-14.33333h-86.41992l-0.46191,-0.83985l8.42643,-13.49349h53.52604c5.21017,0 10.005,-2.83296 12.52767,-7.37663l25.8252,-46.47135c1.23983,-2.22167 1.20601,-4.93167 -0.08399,-7.12467c-1.29,-2.18583 -3.64985,-3.52734 -6.18685,-3.52734h-105.69434zM43.58789,43h87.55371l-19.9043,35.83333h-52.71419zM50.16667,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333zM121.83333,129c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z" /></g></g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </flickity>
-      </no-ssr>
-      <!--flickity-->
+    <div class="other" id="other">
+      <div class="other-figure-left-wrapper">
+        <img src="@/static/img/other/other/figure-left-top.svg" alt="" class="other-figure-left-img">
+        <h2 class="page-title">Возможные вопросы<br>possible questions</h2>
+      </div>
+      <div class="other-questions">
+        <ul class="other-questions__list" @mousemove="questionGlowFonOver($event)" @click="questionTabs($event)">
+          <li
+            class="other__list-item"
+            @mouseleave="questionGlowFonLeave($event)"
+            v-for="question of this.questionAnswer"
+            :key="question.quest"
+          >{{ question.quest }}</li>
+        </ul>
+        <div class="other-answers" ref="answers">
+          <p class="other-answers__text" hidden :key="answer.answ" v-for="answer in this.questionAnswer">{{ answer.answ }}</p>
+        </div>
+      </div>
     </div>
-    <app-three-d-modal
-      v-if="item"
+
+    <app-card-info-modal
+      v-if="openCloseModal"
       ref="threeDModal"
+      v-model="openCloseModal"
       class="animate__zoomIn"
-      :item="item"
-      @closeModal="item = $event"
+      :item="itemData.name"
+      :btns="{
+        volume: null,
+        close: true,
+        like: true,
+        basket: true
+      }"
     />
-  </div>
+  </main>
 </template>
 
 <script>
-import AppThreeDModal from '@/components/ThreeDModal'
+import AppThreeDCarousel from '@/components/3DIndexSlider'
+import AppCardInfoModal from '@/components/CardInfoModal'
 import AppLoader from '@/components/Loader'
+import AppRedButton from '@/components/RedBtn'
 import 'animate.css'
 
 export default {
   components: {
-    AppThreeDModal,
-    AppLoader
+    AppCardInfoModal,
+    AppLoader,
+    AppThreeDCarousel,
+    AppRedButton
   },
   data () {
     return {
-      item: null,
-      mobilSlider: true,
-      flickityOptions: {
-        pageDots: false,
-        prevNextButtons: false,
-        lazyLoad: 1,
-        wrapAround: true
+      itemData: null,
+      sliderCardData: {},
+      urlImgFrontAndBack: [],
+      threeDCarousel: false,
+      realDate: null,
+      questionAnswer: [
+        {
+          quest: 'Как оформить заказ?', answ: `Оформить заказ можно через сайт: добавляете товар в корзину и через нее производите оплату,
+          либо через "Вконтакте": переходите в раздел товаров, выбираете интересующий Вас продук и заполняете все поля.
+          После с Вами свяжется менеджер и вы произведете оплату.`
+        },
+        {
+          quest: 'Рекомендации по уходу', answ: `Следующие рекомендации будут актуальны для любой нашей продукции:
+            При стирке и глажке одежду нужно вывернуть наизнанку. Стирать следует при температуре не выше 30°. Не использовать отбеливатели.`
+        },
+        {
+          quest: 'Как отследить заказ?', answ: `Отследить заказ можно через различные сайты в зависимости от способа доставки:
+            Почта России и СДЭК. Независимо от варианта доставки,
+            будет выслан трек-код, с помощью которого и будет происходить отслеживание
+            (также отслеживать можно через приложения "Вконтакте").`
+        },
+        {
+          quest: 'Возврат товара', answ: 'Возврат товара возможен только при обнаружении брака или несоответствия описанию. В таком случае отправка товара обратно происходит за наш счет, а Вам будет возвращена сумма в полном объеме.'
+        },
+        {
+          quest: 'Идея за подарок', answ: `У Вас есть возможность получить от меня (основателя) подарок за идею дизайна.
+            Представьте ситуацию: разрабатывается активно новый продукт, например, по аниме Hunter x Hunter.
+            Я создаю чат, где набираю людей, которые смотрели Hunter\`a (и только их). Там я презентую им этот продукт (все на стадии идеи). О нем будем знать только мы: что за одежда, что на нем будет, какие фишки будут использоваться…
+            Также я буду выслушивать Ваши идеи, отрицательные или положительные отзывы о грядущем релизе.
+            Чем это круто и полезно?
+            1) Будет создан товар, продуманный до мелочей, со всеми фишками и тонкостями из аниме.
+            2) Будут отбираться действительно перспективные идеи от Вас. Если идея по итогу будет одобрена, то будет стоять вопрос о реализации. Если нет, то нет.
+            Важно понимать и помнить, все в конце будет прогоняться через руку профессионального дизайнера, чтобы вышла «чоколатка» . То есть будет обсуждаться именно идея - концепция.
+
+            А как за это получить подарок и что это за подарок такой?
+            Тот, чье предложение будет реализовано или поможет мне в создании нового продукта, будет поощрен подарком.
+            Это может быть стикер пак, скидки, деньги (это когда админ будет миллионером), билеты в местный кино, какой — то неожиданный бонус от меня в виде сладостей..
+            Это именно подарок: что — нибудь оригинальное и интересное от меня. И подарки эти будут людские: я хочу поощрить и порадовать вас за активное участие и классные идеи. Поэтому ждите достойный сюрприз, а не «абы что».
+            После обсуждений я буду исключать ВСЕХ из чата. Никто не будет там отсиживаться.
+            Если резюмировать, вот что имеем:
+            - я подготавливаю презентацию о грядущем товаре
+            - собираю людей в чат
+            - вы отвечаете на поставленные вопросы
+            - ведем бурное обсуждение
+            - с меня подарок
+            - исключаю всех из чата
+
+            все начинается с Вас
+            P.S
+            Есть те кто уже получил от меня свои подарки, поскольку принимали активное участие в этом. Огромное им от меня спасибо. Если остались вопросы, пишите мне.
+            Возможность проявить себя есть всегда. Чтобы понять происходящее, просто следи за группой и разок поучаствуй в таком мероприятии. Будет интересно!`
+        },
+        {
+          quest: 'Скидочная система', answ: `По этому поводу отлично написана статья в ВК, потому что именно там она и актульна. В добавок, независимо от этого разрабатывается система
+            накопительных процентов для скидок на сайте.`
+        },
+        {
+          quest: 'Написать разработчику', answ: 'Если есть вопросы, предложения: деловые и не очень, то всегда можете написать мне в вк: @iddizzycrow - там меня застать легче всего. Всем буду рад'
+        }
+      ]
+    }
+  },
+  computed: {
+    openCloseModal () {
+      return this.$store.getters.get3DModalCard
+    },
+    cardsArr () {
+      return this.$store.getters.cardsArr
+    },
+    slideDropDate () {
+      return this.$store.getters.dropDate
+    },
+    timeLeft () {
+      return this.$store.getters.timeLeft
+    }
+  },
+  async beforeMount () {
+    await this.$store.dispatch('disableScroll')
+
+    // начало махинайций с выводом данных
+    await this.$store.dispatch('indexFirstScreen', './db.json')
+
+    // nearestDrop
+    for (const card of this.cardsArr) {
+      this.realDate = Date.parse(card.dropDate) - Date.parse(new Date())
+
+      if (this.realDate > 0) {
+        this.itemData = await JSON.parse(JSON.stringify(card))
+        this.sliderCardData = await JSON.parse(JSON.stringify(card))
+        await this.$store.dispatch('timer', this.sliderCardData.dropDate) // undefiend
+        this.urlImgFrontAndBack.push(this.itemData.imageUrl, this.itemData.imageBackUrl)
+
+        break
+      } else {
+        console.log('нет нового товара, все')
       }
     }
+    // конец махинаций с выводом данных
   },
   mounted () {
-    // Loader
-    this.$store.commit('DISABLE_LOADER')
-    this.$store.dispatch('enablesScroll')
-    // Loader --
-
-    // Slider mobil
-    if (document.body.offsetWidth < 975) {
-      this.mobilSlider = false
-    }
-    // Slider mobil --
-
-    // Timer
-    return this.$store.getters.timer
-    // Timer --
+    // выключаем лоадер, когда загрузилось все
+    window.addEventListener('load', () => {
+      // Loader
+      this.$refs.answers.querySelector('.other-answers__text').hidden = false
+      this.$store.commit('DISABLE_LOADER')
+      this.$store.dispatch('enablesScroll')
+      // Loader --
+    })
   },
   methods: {
-    ThreeDModal (e) {
-      new Promise((resolve) => {
-        this.$store.commit('ENABLE_LOADER')
-        setTimeout(() => { resolve() }, 2000)
+    CardInfoModal (e) {
+      this.$store.dispatch('CardInfoModal', e)
+    },
+    revertCard (e) {
+      // фотография, которую надо менять
+      const imgFrontAndBack = this.$refs.poster.querySelectorAll('.poster-slider__img')
+
+      for (const img of imgFrontAndBack) {
+        if (!img.hidden) {
+          img.hidden = true
+        } else {
+          img.hidden = false
+        }
+      }
+
+      // меняю в html местами изображения, чтобы анимация отрабатывала без новой подгрузки
+      const lastImg = imgFrontAndBack[1]
+      imgFrontAndBack[1].remove()
+      this.$refs.poster.querySelector('.slider-border').insertAdjacentElement('afterend', lastImg)
+
+      // a = [b, b = a][0];
+    },
+    newPoster (e) {
+      // this.cardsArr - массив из шины со всеми карточками
+      this.cardsArr.find((item, index, array) => {
+        if (item.id === this.sliderCardData.id) {
+          if (e === 'next' && array[index + 1]) {
+            this.sliderCardData = array[index + 1]
+            this.realDate = Date.parse(array[index + 1].dropDate) - Date.parse(new Date())
+            this.$store.dispatch('timer', array[index + 1].dropDate)
+          }
+          if (e === 'next' && !array[index + 1]) {
+            this.sliderCardData = array[0]
+            this.realDate = Date.parse(array[0].dropDate) - Date.parse(new Date())
+            this.$store.dispatch('timer', array[0].dropDate)
+          }
+          if (e === 'prev' && array[index - 1]) {
+            this.sliderCardData = array[index - 1]
+            this.realDate = Date.parse(array[index - 1].dropDate) - Date.parse(new Date())
+            this.$store.dispatch('timer', array[index - 1].dropDate)
+          }
+          if (e === 'prev' && !array[index - 1]) {
+            this.sliderCardData = array[array.length - 1]
+            this.realDate = Date.parse(array[array.length - 1].dropDate) - Date.parse(new Date())
+            this.$store.dispatch('timer', array[array.length - 1].dropDate)
+          }
+          return item
+        }
+        return null
       })
-        .then(() => {
-          const parentCard = e.target.closest('.carouselItem')
-          this.item = parentCard.id
-          this.$store.dispatch('disableScroll')
+    },
+    questionGlowFonOver (e) {
+      const target = e.target.closest('.other__list-item')
+      const spotlightSize = 'rgba(255, 255, 255, 0.1) 7px, rgba(255, 255, 255, 0.09) 20px, rgba(255, 255, 255, 0.03) 52px'
+      if (target) {
+        target.style.background = `radial-gradient(circle at ${e.offsetX / target.offsetWidth * 100}% ${e.offsetY / target.offsetHeight * 100}%, ${spotlightSize})`
+      }
+    },
+    questionGlowFonLeave (e) {
+      e.target.closest('.other-questions__list').querySelectorAll('.other__list-item').forEach((item, i) => {
+        item.style.background = 'rgba(255, 255, 255, 0.03)'
+      })
+    },
+    questionTabs (e) {
+      const target = e.target.closest('.other__list-item')
+      if (target) {
+        target.closest('.other-questions__list').querySelectorAll('.other__list-item').forEach((item, i) => {
+          target.closest('.other-questions').querySelectorAll('.other-answers__text')[i].hidden = true
+          if (item.textContent === target.textContent) {
+            target.closest('.other-questions').querySelectorAll('.other-answers__text')[i].hidden = false
+          }
         })
-        .then(() => {
-          this.$store.commit('DISABLE_LOADER')
-        })
-        .catch(() => {
-          throw Error
-        })
+      }
     }
   }
 }
 </script>
 
-<style lang="scss">
-@font-face {
-  font-family: 'Heartless';
-  src: url("../static/fonts/flash.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
+<style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Montserrat:wght@600;700&family=Stardos+Stencil&display=swap');
+//font-family: 'Black Ops One', cursive;
+//font-family: 'Montserrat', sans-serif;
+//font-family: 'Stardos Stencil', cursive;
 @mixin infoHydi{
   padding-left: 4px;
   margin: 8px 0;
@@ -601,28 +370,39 @@ export default {
   }
 }
 
-.background-rain{
-  background: url('../static/img/rain.gif');
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: fixed;
-  z-index: -4;
-  width: 100%;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  right: 0;
+.page-title {
+  position: relative;
+  max-width: 300px;
+  font-weight: bold;
+  font-size: 26px;
+  line-height: 1.6;
+  text-align: center;
+  margin: 0 auto;
+  text-transform: uppercase;
+  color: #FFFFFF;
 
   &:after {
     content: '';
     position: absolute;
-    z-index: -3;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    top: 50%;
+    left: 50%;
+    width: 86%;
+    height: 2px;
+    border-radius: 8px;
+    transform: translate(-50%, -50%);
+    background: white;
   }
+}
+
+.sold-out {
+  font-family: 'Stardos Stencil', cursive;
+  font-size: 44px;
+  color: #fff;
+}
+
+.first-screen {
+  background: linear-gradient(248.39deg, rgba(27, 10, 22, 0.93) 10.92%, rgba(121, 112, 116, 0.65) 90.32%);
+  min-height: calc(100vh - 51px);
 }
 
 .container-flex{
@@ -634,221 +414,162 @@ export default {
   }
 }
 
-.container-carousel{
-  height: 500px;
-  overflow: hidden;
-}
-
-// объемный блок слева / анимация
-#three-container{
-  display: inline-block;
-  position: relative;
-  height: min-content;
-  flex-basis: 100%;
-  max-height: 430px;
-  margin: 0 auto;
-
-  canvas {
-    width: 100% !important;
-    object-fit: cover;
-    overflow: visible;
-    border: 12px solid #ffffffa8;
-    cursor: w-resize;
-    position: relative;
-    max-height: 430px;
-    padding: 15px 20px;
-
-    @media (max-width: 390px) {
-      height: 340px !important;
-      padding: 0;
-    }
-
-    @media (min-width: 970px) {
-      max-height: 400px;
-      max-width: 600px;
-    }
-  }
-
-  &:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    background-color:rgba(255, 255, 255, .75);
-    filter: blur(13px);
-  }
-
-  @media (max-width: 390px) {
-    height: 340px;
-  }
-
-  @media (min-width: 540px) {
-    max-width: 100%;
-    flex-basis: 90%;
-    margin: 0 auto 40px;
-  }
-
-  @media (min-width: 970px) {
-    min-width: 460px;
-    flex-basis: 45%;
-    margin-bottom: 0;
-    margin-right: 15px;
-    margin-left: 0;
-  }
-}
-// объемный блок слева / анимация --
-
-.poster{
-  border: 12px solid rgba(71, 69, 69, 0.66);
-  flex-basis: 100%;
-  position: relative;
-  color: #ffffff;
-  padding: 20px 15px;
-  margin-top: 25px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  &:after {
-    content: '';
-    position: absolute;
-    left: -3px;
-    top: -3px;
-    width: calc(100% + 6px);
-    height: calc(100% + 6px);
-    z-index: -1;
-    background-color: rgb(79, 70, 70);
-    filter: blur(2px) brightness(0.7);
-  }
-
-  @media (min-width: 540px) {
-    max-width: 100%;
-    flex-basis: 90%;
-    margin: 0 auto 40px;
-  }
-
-  @media (min-width: 700px) {
-    flex-basis: 90%;
-    margin: 0 auto;
-  }
-
-  @media (min-width: 970px) {
-    flex-basis: 52%;
-  }
-}
-
-.poster__header{
+.poster {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0 20px;
-}
+  width: 100%;
+  padding: 50px 0;
 
-.poster__header-title{
-  font-family: Heartless;
-  font-weight: 500;
-  letter-spacing: 3px;
-  font-size: 35px;
-
-  @media (min-width: 468px) {
-    margin-right: 10px;
+  &-released {
+    font-size: 30px;
+    line-height: 1;
+    font-family: 'Stardos Stencil', cursive;
+    text-transform: uppercase;
+    color: white;
+    margin-top: 5px;
   }
 
-  @media (min-width: 995px) {
-    font-size: 42px;
-    margin-right: 0;
-  }
-}
-
-.poster__header-icon{
-  display: flex;
-
-  svg {
-    width: 29px;
-    position: relative;
-    z-index: 2;
-  }
-}
-
-.poster__icon{
-  &:not(:first-child){
-    margin-left: 25px;
-  }
-  position: relative;
-  cursor: pointer;
-
-  &:before{
-    content: '';
+  &-slider-nav {
     position: absolute;
-    width: 45px;
-    height: 45px;
-    background-color: #3c3838;
-    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-basis: 60%;
+    width: 60%;
+    margin: 0 auto;
     left: 50%;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-    transition: 0.3s ease-out;
+    top: calc(100% + 50px);
+    transform: translate(-50%, -25%);
+
+    button {
+      border-radius: 8px 8px 0 0;
+    }
   }
 
-  &:hover:before{
-    background-color: #413843;
-    box-shadow: 0px 1px 6px -3px;
+  &__descr {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 33px;
+
+    &:before {
+      content: '';
+      position: absolute;
+      height: 80%;
+      width: 2px;
+      top: 10%;
+      left: 53%;
+      background: #fff;
+      border-radius: 5px;
+    }
+  }
+
+  &__text {
+    max-width: 250px;
+    text-align: left;
+    font-family: sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 1.4;
+    color: #FFFFFF;
+    letter-spacing: 0.9px;
+    text-align: justify;
+
+    &.poster__list {
+      width: 216px;
+      &:after {
+        content: none;
+      }
+    }
+
+    & li{
+      display: block;
+      list-style: none;
+      text-decoration: none;
+    }
+  }
+
+  &-info {
+    max-width: 524px;
+
+    &__title {
+      font-family: Montserrat;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 46px;
+      line-height: 56px;
+
+      color: #F4EAEA;
+    }
   }
 }
 
-.poster__body{
-  margin-bottom: auto;
+.slider-nav-btn {
+  font-size: 25px;
+  padding: 10px 18px;
 }
 
-.poster__advantages{
-  @include infoHydi
-}
-
-.poster__descr{
-  font-size: 17px;
-  margin: 20px 0;
-}
-
-.poster__footer{
+.poster-price {
+  font-family: Black Ops One;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 22px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  text-align: right;
 
-  @media (max-width: 465px) {
-    flex-direction: column;
+  color: #FFFFFF;
+
+  & span:last-child {
+    background: #ef3794c7;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  & span:first-child {
+    font-size: 16px;
+    text-decoration: line-through;
+    color: #e7e1e1;
   }
 }
 
-.go-to-product{
-  color: #f6f1f1;
-  text-decoration: none;
-  transition: 0.3s ease-out;
-  height: min-content;
-  margin-top: auto;
+.poster-slider, .poster-slider__img {
+  position: relative;
+  max-width: 500px;
+  max-height: 500px;
+  height: 100%;
+  width: 100%;
+}
 
-  span{
-    transition: 0.3s ease-out;
-    display: inline-block;
-  }
+.slider-border {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 60px solid rgba(243, 43, 144, 0.12);
+  box-shadow: 0 2px 25px #ff008240;
+  border-radius: 50%;
+  z-index: -1;
+  background: rgba(243, 43, 144, 0.08);
 
-  &:hover, &:hover span{
-    margin-left: 5px;
-    color: #ffffff;
+  & img {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    transform: translate(-25%, -30%);
   }
 }
 
 // Timer
-.poster__timer{
-
-  & > span {
-    font-size: 18px;
-    display: inline-block;
-    margin-bottom: 11px;
-  }
+.timer-countdown {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  color: #F9F9F9;
 }
 
 .timer{
@@ -856,9 +577,14 @@ export default {
 }
 
 .timer__block{
-  font-size: 26px;
-  letter-spacing: 3px;
+  font-family: Stardos Stencil;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 40px;
+  line-height: 1.38;
+  color: #FFFFFF;
   margin-right: 10px;
+  text-transform: uppercase;
 
   @media (max-width: 465px) {
     margin-bottom: 15px;
@@ -870,219 +596,223 @@ export default {
 }
 // Timer
 
-// Glitch
-.glitch {
-  position: absolute;
+.delivery {
+  position: relative;
   width: 100%;
-  height: 100%;
-  background: url("https://sun9-73.userapi.com/impf/z7JrUfHmc4CjxYMuuXfH5LFiz8sxyll9pEz-AA/nlcwiuvxJNQ.jpg?size=1567x886&quality=96&proxy=1&sign=e0b76ef3e66a757aeec688f65c4a5a15&type=album ");
-  background-size: cover;
-  left: 0;
-  top: 0;
-  animation: 420s GlitchTime infinite;
-  animation-delay: 6s;
-  z-index: -5;
+  padding: 77px 0;
+  color: white;
+  background: linear-gradient(180deg, #3E3C3C 0%, rgba(62, 60, 60, 0.5) 49.92%, rgba(53, 56, 74, 0) 99.06%), #3C3D3E;
 
-  @media (max-width: 410px) {
-    background-position: -100%;
-  }
-}
-
-@keyframes GlitchTime {
-  1%, 100% {
-    z-index: -5;
-  }
-  0% {
-    z-index: 5;
-  }
-}
-
-.glitch:before {
-  content:'';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: url("https://sun9-73.userapi.com/impf/z7JrUfHmc4CjxYMuuXfH5LFiz8sxyll9pEz-AA/nlcwiuvxJNQ.jpg?size=1567x886&quality=96&proxy=1&sign=e0b76ef3e66a757aeec688f65c4a5a15&type=album ");
-  background-size: cover;
-  left: 0;
-  top: 0;
-
-  opacity:0.8;
-  mix-blend-mode: hard-light;
-  animation: Glitch .2s infinite;
-}
-
-@keyframes Glitch {
-  0% {
-    background-position: 0 0;
-    filter: hue-rotate(70deg);
-  }
-  10% {
-    background-position: 60px 0;
-  }
-  20% {
-    background-position: -60px 0;
-  }
-  30% {
-    background-position: 12px 0;
-  }
-  40% {
-    background-position: -16px 0;
-  }
-  50% {
-    background-position: -16px 0;
-  }
-  60% {
-    background-position: -52px 0;
-  }
-  70% {
-    background-position: 0 42px;
-  }
-  80% {
-    background-position: -40px -30px;
-  }
-  100% {
-    background-position: 0px -30px;
-    filter: hue-rotate(360deg);
-  }
-}
-// Glich --
-
-// 3Dslider --
-.trans3d {
-  -webkit-transform-style: preserve-3d;
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform-style: preserve-3d;
-  -moz-transform: translate3d(0, 0, 0);
-  -ms-transform-style:preserve-3d;
-  -ms-transform: translate3d(0, 0, 0);
-  transform-style:preserve-3d;
-  transform: translate3d(0, 0, 0);
-
-  /*-webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  -ms-backface-visibility:hidden;
-  backface-visibility:hidden;*/
-}
-
-#contentContainer {
-  width:100%;
-  height:500px;
-}
-
-#carouselContainer {
-  position:absolute;
-  margin-left:-500px;
-  margin-top:-500px;
-  left:50%;
-  top:50%;
-  width:100%;
-  height:950px;
-}
-
-.carouselItem {
-  width:320px;
-  height:200px;
-  position:absolute;
-  left:50%;
-  top:50%;
-  margin-left:-160px;
-  margin-top:-90px;
-  visibility:hidden;
-
-  &:before{
-    content: attr(data-number);
-    color: #4f4c4c;
-    font-size: 70px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 13px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    z-index: 0;
-    transform: translate(-50%, -50%) scaleX(-1) ;
-    backface-visibility: visible;
-  }
-}
-
-.carouselItemInner {
-  display: flex;
-  width:320px;
-  height:200px;
-  position:absolute;
-  background-color:rgba(255, 255, 255, .75);
-  border:10px solid rgba(255, 255, 255, .5);
-  left:50%;
-  top:50%;
-  margin-left:-160px;
-  margin-top:-90px;
-  text-align:center;
-
-  .poster__header-icon{
-    justify-content: flex-end;
-    margin-top: auto;
-    padding: 0 5px 5px 0;
+  &-info-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 137px auto;
+    max-width: 812px;
+    width: 100%;
   }
 
-  .poster__icon{
-    margin-top: auto;
-    margin-left: 8px;
+  &-info {
+    text-align: center;
+    position: relative;
 
-    &:before{
-      content: none;
+    &__text {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 26px;
+      line-height: 1.25;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+  }
+
+  &-descr {
+    position: relative;
+    max-width: 894px;
+    width: 100%;
+    padding: 69px 66px 0;
+    margin: 0 auto 100px;
+
+    &__text {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 22px;
+      line-height: 27px;
+      margin-bottom: 36px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    &:after, &:before {
+      content: '';
+      position: absolute;
+      width: 119px;
+      height: 119px;
+      background: #FF0081;
+      left: 0;
+      top: 0;
+      clip-path: polygon(0 1%, 100% 0, 20% 20%, 0% 100%);
+    }
+
+    &:before {
+      right: 0;
+      left: auto;
+      transform: rotate(90deg);
+    }
+  }
+
+  &-figure {
+    &-left {
+      position: absolute;
+      left: -153px;
+      top: 270px;
+      transform: rotate(-45deg);
+
+      &:before {
+        content: '';
+        position: absolute;
+        left: 143px;
+        top: 2px;
+        width: 314px;
+        height: 113px;
+        z-index: 3;
+        clip-path: polygon(23% 0, 77% 0, 100% 65%, 85% 65%, 73% 100%, 27% 100%, 15% 65%, 0 65%);
+        background: linear-gradient(180deg, rgba(122,131,191,1) 0%, rgba(122,131,191,1) 65%, rgba(255,0,129,1) 65%, rgba(255,0,129,1) 100%);
+      }
+
+      &:after {
+        content: '';
+        position: absolute;
+        clip-path: polygon(24% 0, 76% 0, 100% 100%, 0% 100%);
+        background: rgb(34, 40, 51);
+        transform: translateX(-4px);
+        width: 608px;
+        height: 142px;
+        z-index: 2;
+        top: 76px;
+      }
+    }
+
+    &-right {
+      position: absolute;
+      clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+      bottom: 0;
+      right: 0;
+      width: 252px;
+      height: 252px;
+      background: #2D3037;
+
+      &:after {
+        content: '';
+        position: absolute;
+        clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+        bottom: 0;
+        right: 0;
+        width: 147px;
+        height: 147px;
+        background: #7A83BF;
+      }
+
+      &:before {
+        content: '';
+        position: absolute;
+        clip-path: polygon(0 0, 0% 100%, 100% 0);
+        width: 56px;
+        height: 56px;
+        background: #FF0081;
+        right: 0;
+        bottom: 0;
+        transform: translate(-45px, -45px);
+      }
     }
   }
 }
 
-.carousel-item__img{
+.other {
+  background: #1B212C;
   position: relative;
-  flex-basis: 50%;
-  height: 100%;
+  overflow: hidden;
+  padding: 77px 0;
 
-  img{
-    width: 150%;
-    height: 135%;
+  &-figure-left {
+    display: flex;
+    flex-wrap: wrap;
+
+    &:nth-child(2n) {
+      margin-left: -75px;
+    }
+  }
+
+  &-figure-left__item {
+    margin-bottom: 3px;
+    margin-right: -24px;
+    background: #333942;
+    width: 140px;
+    height: 35px;
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+
+    &:nth-child(2n) {
+      transform: rotate(180deg);
+    }
+  }
+
+  &-figure-left-img {
     position: absolute;
-    left: -50px;
-    top: -30px;
-    backface-visibility: hidden;
-    transform: translate3d(0px, 0px, 11px);
-    filter: blur(1px);
+    left: 0;
+    top: -25px;
   }
-}
 
-.carousel-item__info{
-  text-align: left;
-  filter: blur(-1px);
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  z-index: 1;
-}
+  .page-title {
+    max-width: 370px;
+  }
 
-.item-info__header{
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 5px 5px 0 0;
+  &-questions {
+    max-width: 894px;
+    width: 100%;
+    display: flex;
+    margin: 0 auto;
+    position: relative;
+    margin-top: 137px;
+  }
 
-  span{
+  &-questions__list {
+    flex: 1;
+    margin-right: 30px;
+  }
+
+  &__list-item {
+    display: block;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    color: white;
+    cursor: pointer;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &-answers {
+    flex: 1;
+    padding: 20px 10px;
+    box-shadow: 0px 0px 49px -40px white;
+    border: 4px solid #ffffff33;
+    border-radius: 2px;
+    line-height: 1.5;
     font-size: 15px;
-    font-weight: 500;
-    letter-spacing: 3px;
-  }
+    overflow-y: auto;
+    color: #fff;
+    max-height: 435px;
 
-  h2{
-    font-size: 14px;
-    font-weight: 700;
-    margin-right: 5px;
+    &__text {}
   }
 }
-
-.item-info__text{
-  @include infoHydi;
-}
-
-// 3Dslider --
 </style>

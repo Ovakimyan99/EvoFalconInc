@@ -1,0 +1,35 @@
+[
+  {
+    "id": "hhhyyy001",
+    "name": "HOODIE «EMPTINESS OF THE SOUL» VOL.01",
+    "imageUrl": "./img/hoody-kaneki/mockup.png",
+    "imageBackUrl": "./img/hoody-kaneki/mockupBack.jpg",
+    "substrateUrl": "./img/licoricewhite.png",
+    "priceDrop": "4300",
+    "pricePreorder": "3800",
+    "dropDate": "2021-06-30",
+    "text": "Испоьлзуется оверсайз крой, с нашивками из джинсы и прямой полноцветной печатью.",
+    "info": [
+      "Оверсайз крой",
+      "Размеры: М / L / XL",
+      "Плотность: 350 гр / м"
+    ]
+  },
+  {
+      "id": "hhhyyy002",
+      "name": "LONGSLIV «ГЛАЗА что то там» VOL.02",
+      "imageUrl": "./img/hoody-kaneki/mockup.png",
+      "imageBackUrl": "./img/hoody-kaneki/mockupBack.jpg",
+      "substrateUrl": "./img/licoricewhite.png",
+      "priceDrop": "2800",
+      "pricePreorder": "2500",
+      "dropDate": "2021-05-30",
+      "text": "Используются разные виды такани. Рукава сделаны в стиле тай - дай",
+      "info": [
+        "Оверсайз крой",
+        "Размеры: М / L / XL",
+        "Плотность:  гр / м",
+        "Двойные рукава"
+      ]
+    }
+]
