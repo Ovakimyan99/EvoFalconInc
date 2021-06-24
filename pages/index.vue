@@ -268,13 +268,11 @@ export default {
   },
   mounted () {
     // выключаем лоадер, когда загрузилось все
-    window.addEventListener('load', () => {
-      // Loader
-      this.$refs.answers.querySelector('.other-answers__text').hidden = false
-      this.$store.commit('DISABLE_LOADER')
-      this.$store.dispatch('enablesScroll')
-      // Loader --
-    })
+    // Loader
+    this.$refs.answers.querySelector('.other-answers__text').hidden = false
+    this.$store.commit('DISABLE_LOADER')
+    this.$store.dispatch('enablesScroll')
+    // Loader --
   },
   methods: {
     CardInfoModal (e) {

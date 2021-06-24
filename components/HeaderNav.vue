@@ -42,10 +42,10 @@ export default {
   data () {
     return {
       linksMenu: [
-        { url: '/', icon: 'icon-catalog', name: 'Каталог' },
+        { url: '/catalog', icon: 'icon-catalog', name: 'Каталог' },
         { url: '/', icon: 'icon-filtr', name: 'Отзывы' },
         { url: '/', icon: 'icon-setting', name: 'Ваши идеи' },
-        { url: '/', icon: 'icon-phone', name: 'Новости' },
+        { url: '/news', icon: 'icon-phone', name: 'Новости' },
         { url: '/', icon: 'icon-user', name: 'Профиль' }
       ]
     }

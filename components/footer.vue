@@ -1,12 +1,14 @@
 <template>
-  <div>
-    <footer class="footer">
+  <div class="footer-wrapper">
+    <footer class="footer container">
       <div class="footer-info">
         <h3 class="footer-info__title">CONTACTS</h3>
         <div class="footer-info__options">
           <div class="footer-info__social" v-for="social in social" :key="social.name">
-          <img :src="`./img/other/social/${social.src}.svg`" :alt="social.name" :title="social.name" class="social-icon">
-        </div>
+            <a :href="social.src" target="_blank">
+              <img :src="`./img/other/social/${social.name}.svg`" :alt="social.name" :title="social.name" class="social-icon">
+            </a>
+          </div>
         </div>
       </div>
       <div class="footer-info">
@@ -36,16 +38,16 @@ export default {
   data: () => ({
     social: [
       {
-        src: 'vk', name: 'vk'
+        src: 'https://vk.com/evo_falcon_inc', name: 'vk'
       },
       {
-        src: 'instagram', name: 'instagram'
+        src: 'https://www.instagram.com/evo_falcon_inc/', name: 'instagram'
       },
       {
-        src: 'tiktok', name: 'tiktok'
+        src: 'https://www.tiktok.com/@evo_falcon_inc?lang=ru-RU', name: 'tiktok'
       },
       {
-        src: 'tiger', name: 'tiger'
+        src: 'https://vk.com/iddizzycrow1947', name: 'tiger'
       }
     ],
     faq: [
@@ -88,10 +90,13 @@ export default {
 
 <style scoped lang="scss">
 .footer {
-  background-color: #6A7995;
   display: flex;
   justify-content: space-between;
-  padding: 64px 136px;
+
+  &-wrapper {
+    background-color: #6A7995;
+    padding: 64px 0;
+  }
 
   &-info {
     margin-right: 30px;

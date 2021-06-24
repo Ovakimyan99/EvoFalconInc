@@ -174,7 +174,9 @@ export default {
         playSpin(false)
       })
       headerIcon.addEventListener('mouseleave', () => {
-        playSpin(true)
+        if (!switchSpinBoolean) {
+          playSpin(true)
+        }
       })
     })
 
