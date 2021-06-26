@@ -52,14 +52,6 @@ export default {
 <style lang="scss" scoped>
 @import "plugins/incons.css";
 
-::-webkit-scrollbar { width: 3px; height: 3px;}
-::-webkit-scrollbar-button {  background-color: #666; }
-::-webkit-scrollbar-track {  background-color: #999;}
-::-webkit-scrollbar-track-piece { background-color: #ffffff;}
-::-webkit-scrollbar-thumb { height: 50px; background-color: #666; border-radius: 3px;}
-::-webkit-scrollbar-corner { background-color: #999;}
-::-webkit-resizer { background-color: #666;}
-
 .modal{
   position: fixed;
   z-index: 15;

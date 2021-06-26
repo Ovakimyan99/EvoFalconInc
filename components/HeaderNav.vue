@@ -43,7 +43,7 @@ export default {
     return {
       linksMenu: [
         { url: '/catalog', icon: 'icon-catalog', name: 'Каталог' },
-        { url: '/', icon: 'icon-filtr', name: 'Отзывы' },
+        { url: '/reviews', icon: 'icon-filtr', name: 'Отзывы' },
         { url: '/', icon: 'icon-setting', name: 'Ваши идеи' },
         { url: '/news', icon: 'icon-phone', name: 'Новости' },
         { url: '/', icon: 'icon-user', name: 'Профиль' }

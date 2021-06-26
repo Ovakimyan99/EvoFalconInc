@@ -8,7 +8,7 @@
 
 <script>
 import AppHeaderNav from '@/components/HeaderNav'
-import AppFooterNav from '@/components/footer'
+import AppFooterNav from '@/components/Footer'
 
 export default {
   components: { AppHeaderNav, AppFooterNav }

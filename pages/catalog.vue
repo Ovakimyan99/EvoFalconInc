@@ -1,33 +1,54 @@
 <template>
-<section class="sale">
-  <picture class="sale-info">
-    <source srcset="@/static/img/sale/carefullyHotFon.webp" class="sale-info__fon-img">
-    <img src="@/static/img/sale/carefullyHotFon.jpg" alt="" class="sale-info__fon-img">
-  </picture>
-  <div class="sale-info sale-info--fon">
-    <span class="sale-info__contents">АКЦИЯ / SALE</span>
-    <i class="sale-info__contents--motivator">Заяви о себе по - новому!</i>
-    <h2 class="sale-info__title">Дарим скидку на футболку<br>«CAREFULLY HOT»</h2>
-    <div class="sale-info__special-offer">
-      <div class="sale-info__timer--wrapper">
-        <span>До конца акции</span>
-        <time class="sale-info__timer">
-          14 : 21: 17: 20
-        </time>
+<div>
+  <section class="sale">
+    <picture class="sale-info">
+      <source srcset="@/static/img/sale/carefullyHotFon.webp" class="sale-info__fon-img">
+      <img src="@/static/img/sale/carefullyHotFon.jpg" alt="" class="sale-info__fon-img">
+    </picture>
+    <div class="sale-info sale-info--fon">
+      <span class="sale-info__contents">АКЦИЯ / SALE</span>
+      <i class="sale-info__contents--motivator">Заяви о себе по - новому!</i>
+      <h2 class="sale-info__title">Дарим скидку на футболку<br>«CAREFULLY HOT»</h2>
+      <div class="sale-info__special-offer">
+        <div class="sale-info__timer--wrapper">
+          <span>До конца акции</span>
+          <time class="sale-info__timer">
+            14 : 21: 17: 20
+          </time>
+        </div>
+        <button type="button" data-sale="10%" class="sale-info__btn">забрать скидку <span>10%</span></button>
       </div>
-      <button type="button" data-sale="10%" class="sale-info__btn">забрать скидку 10%</button>
     </div>
+    <picture class="sale-info__product">
+      <source srcset="@/static/img/sale/carefullyHot.webp" class="sale-info__product-img">
+      <img src="@/static/img/sale/carefullyHot.png" alt="" class="sale-info__product-img">
+    </picture>
+  </section>
+  <app-sort-nav />
+  <div class="products container">
+    <app-product-item-cart
+      v-for="n in 5"
+      :key="n"
+      :btns="{
+        info: true,
+        cart: true,
+        delete: false,
+        like: true
+      }"
+    />
   </div>
-  <picture class="sale-info__product">
-    <source srcset="@/static/img/sale/carefullyHot.webp" class="sale-info__product-img">
-    <img src="@/static/img/sale/carefullyHot.png" alt="" class="sale-info__product-img">
-  </picture>
-</section>
+</div>
 </template>
 
 <script>
+import AppSortNav from '@/components/SortNav'
+import AppProductItemCart from '@/components/ProductItemCart'
 export default {
-  name: 'catalog'
+  name: 'catalog',
+  components: {
+    AppSortNav,
+    AppProductItemCart
+  }
 }
 </script>
 
@@ -104,7 +125,7 @@ export default {
       line-height: 1;
 
       position: relative;
-      padding: 16px 24px;
+      padding: 16px 10px 16px 24px;
       background: #FF0081;
       border-radius: 7px;
       cursor: pointer;
@@ -112,6 +133,12 @@ export default {
       box-shadow: 0 2px 25px rgba(255, 0, 130, 50%);
       margin-left: 20px;
       overflow: hidden;
+
+      span {
+        margin-left: 13px;
+        font-weight: bold;
+        font-size: 16px;
+      }
 
       &:before {
         content: '?';
@@ -125,6 +152,13 @@ export default {
         color: #ff0081;
         line-height: 2;
         clip-path: polygon(64px 0, 16px 0, 0 100%, 100% 100%);
+        transform: translateX(0);
+        transition: transform 0.3s ease;
+        padding-left: 7px;
+      }
+
+      &:hover:before {
+        transform: translateX(100%);
       }
     }
 
@@ -139,5 +173,12 @@ export default {
       }
     }
   }
+}
+
+.products {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 30px 0 0 0;
 }
 </style>
