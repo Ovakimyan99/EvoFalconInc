@@ -22,6 +22,7 @@
         </nav>
       </div>
     </header>
+
     <div class="bottom-menu">
       <div class="container">
         <div class="bottom-menu__body">
@@ -44,9 +45,8 @@ export default {
       linksMenu: [
         { url: '/catalog', icon: 'icon-catalog', name: 'Каталог' },
         { url: '/reviews', icon: 'icon-filtr', name: 'Отзывы' },
-        { url: '/', icon: 'icon-setting', name: 'Ваши идеи' },
         { url: '/news', icon: 'icon-phone', name: 'Новости' },
-        { url: '/', icon: 'icon-user', name: 'Профиль' }
+        { url: '/profile', icon: 'icon-user', name: 'Профиль' }
       ]
     }
   }

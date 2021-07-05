@@ -43,18 +43,13 @@ export default {
   max-width: 350px;
   width: 100%;
 
-  margin-bottom: 50px;
   border-radius: 0 0 7px 7px;
   box-shadow: 0 0 30px -3px #1b212c;
   overflow: hidden;
   transition: transform 0.3s ease;
 
-  &:nth-child(3n - 1) {
-    margin: 0 15px 50px;
-  }
-
   &:last-child {
-    margin-right: 0;
+    margin-right: 0 !important;
   }
 }
 

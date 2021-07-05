@@ -32,7 +32,7 @@
             placeholder="найти аниме в списке"
             class="anime-choice__covers-search"
           >
-          <button type="button" class="anime-choice__search-btn icon-search">
+          <button type="button" class="anime-choice__search-btn">
             <img src="@/static/img/other/search.png" alt="найти">
           </button>
         </div>
@@ -198,9 +198,6 @@ export default {
         anime.classList.toggle('active')
       }
     }
-  },
-  mounted () {
-    this.$store.dispatch('enablesScroll')
   }
 }
 </script>

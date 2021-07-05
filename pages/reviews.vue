@@ -15,7 +15,7 @@
 
         <div ref="reviewsWrapper" class="reviews-slider-wrapper">
           <section class="reviews-slide__sidebar">
-            <div class="reviews-slide__content" v-for="review of [...reviews].reverse()" :key="review.name">
+            <div class="reviews-slide__content" v-for="review of [...reviews].reverse()" :key="review.img[0]">
               <a v-if="review.userLink" :href="review.userLink" class="reviews-slide__name" target="_blank">{{ review.name }}</a>
               <span v-else class="reviews-slide__name">{{ review.name }}</span>
               <p class="reviews-slide__text">{{ review.text }}</p>
@@ -23,7 +23,7 @@
           </section>
 
           <div class="reviews-slide__img-content">
-            <picture class="reviews-slide__img-wrapper"  v-for="review of reviews" :key="review.name">
+            <picture class="reviews-slide__img-wrapper"  v-for="review of reviews" :key="review.img[0]">
               <source v-if="review.img[0].indexOf('webp') > 0" :srcset="review.img[0]" class="reviews-slide__img">
               <source v-else-if="review.img[1] && review.img[1].indexOf('webp') > 0" :srcset="review.img[1]" class="reviews-slide__img">
               <img v-else :src="review.img[0]" class="reviews-slide__img" :alt="review.name">
@@ -53,7 +53,6 @@ export default {
     AppSortNav
   },
   data: () => ({
-    activeSlide: 0,
     reviews: [
       {
         productName: 'HOODIE «EMPTINESS OF THE SOUL» VOL.01',
@@ -175,18 +174,13 @@ export default {
       }
     ]
   }),
-  computed: {
-    reviewsRevers () {
-      return [...this.reviews].reverse()
-    }
-  },
   methods: {
     changeSlide (direction, e) {
       const sliderWrapper = e.target.closest('.reviews-slider-wrapper')
       const idd = e.target.closest('.reviews-slider').getAttribute('data-idd')
-      const reviewLenght = this.reviews.find(item => item.idd === idd).reviews.length
+      const reviewLenght = this.quantificationReviews(idd)
       const reviewsControl = e.target.closest('.reviews-slider__controls')
-      let activeSlide = reviewsControl.getAttribute('data-active')
+      let activeSlide = +reviewsControl.getAttribute('data-active')
       if (direction === 'up') {
         activeSlide++
         if (activeSlide === reviewLenght) {
@@ -211,6 +205,9 @@ export default {
 
       mainSlide.style.transform = `translateY(-${100 * activeSlide}%)`
       sidebar.style.transform = `translateY(${100 * (activeSlide - reviewLenght + 1)}%)`
+    },
+    quantificationReviews (idd) {
+      return this.reviews.find(item => item.idd === idd).reviews.length
     }
   },
   mounted () {
@@ -218,9 +215,11 @@ export default {
     const sliders = sliderWrapper.querySelectorAll('.reviews-slider')
 
     sliders.forEach((item) => {
+      const idd = item.getAttribute('data-idd')
+      const reviewLenght = this.quantificationReviews(idd)
       const sidebar = item.querySelector('.reviews-slide__sidebar')
       const heightOneSlide = sidebar.clientHeight / window.innerHeight * 100
-      sidebar.style.transform = `translateY(-${(this.reviews.length - 1) * heightOneSlide}vh)`
+      sidebar.style.transform = `translateY(-${(reviewLenght - 1) * heightOneSlide}vh)`
     })
   }
 }

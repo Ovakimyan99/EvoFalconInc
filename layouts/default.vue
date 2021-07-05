@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!--loader-->
+    <app-loader v-if="this.$store.getters.loader" />
+    <!--loader-->
     <app-header-nav />
     <Nuxt />
     <app-footer-nav />
@@ -9,9 +12,28 @@
 <script>
 import AppHeaderNav from '@/components/HeaderNav'
 import AppFooterNav from '@/components/Footer'
+import AppLoader from '@/components/Loader'
 
 export default {
-  components: { AppHeaderNav, AppFooterNav }
+  components: { AppHeaderNav, AppFooterNav, AppLoader },
+  transition: {
+    name: 'loader',
+    mode: '',
+    afterLeave () {
+      console.log('leave')
+      this.$store.dispatch('disableScroll')
+      this.$store.commit('ENABLE_LOADER')
+    },
+    enter (el) {
+      console.log('enter')
+      this.$store.dispatch('enablesScroll')
+      this.$store.commit('DISABLE_LOADER')
+    }
+  },
+  mounted () {
+    // this.$store.commit('DISABLE_LOADER')
+    // this.$store.dispatch('enablesScroll')
+  }
 }
 </script>
 

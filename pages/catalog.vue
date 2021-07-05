@@ -1,43 +1,44 @@
 <template>
-<div>
-  <section class="sale">
-    <picture class="sale-info">
-      <source srcset="@/static/img/sale/carefullyHotFon.webp" class="sale-info__fon-img">
-      <img src="@/static/img/sale/carefullyHotFon.jpg" alt="" class="sale-info__fon-img">
-    </picture>
-    <div class="sale-info sale-info--fon">
-      <span class="sale-info__contents">АКЦИЯ / SALE</span>
-      <i class="sale-info__contents--motivator">Заяви о себе по - новому!</i>
-      <h2 class="sale-info__title">Дарим скидку на футболку<br>«CAREFULLY HOT»</h2>
-      <div class="sale-info__special-offer">
-        <div class="sale-info__timer--wrapper">
-          <span>До конца акции</span>
-          <time class="sale-info__timer">
-            14 : 21: 17: 20
-          </time>
+  <div>
+    <section class="sale">
+      <picture class="sale-info">
+        <source srcset="@/static/img/sale/carefullyHotFon.webp" class="sale-info__fon-img">
+        <img src="@/static/img/sale/carefullyHotFon.jpg" alt="" class="sale-info__fon-img">
+      </picture>
+      <div class="sale-info sale-info--fon">
+        <span class="sale-info__contents">АКЦИЯ / SALE</span>
+        <i class="sale-info__contents--motivator">Заяви о себе по - новому!</i>
+        <h2 class="sale-info__title">Дарим скидку на футболку<br>«CAREFULLY HOT»</h2>
+        <div class="sale-info__special-offer">
+          <div class="sale-info__timer--wrapper">
+            <span>До конца акции</span>
+            <time class="sale-info__timer">
+              14 : 21: 17: 20
+            </time>
+          </div>
+          <button type="button" data-sale="10%" class="sale-info__btn">забрать скидку <span>10%</span></button>
         </div>
-        <button type="button" data-sale="10%" class="sale-info__btn">забрать скидку <span>10%</span></button>
       </div>
+      <picture class="sale-info__product">
+        <source srcset="@/static/img/sale/carefullyHot.webp" class="sale-info__product-img">
+        <img src="@/static/img/sale/carefullyHot.png" alt="" class="sale-info__product-img">
+      </picture>
+    </section>
+    <app-sort-nav />
+    <div class="products container">
+      <app-product-item-cart
+        class="products-item"
+        v-for="n in 5"
+        :key="n"
+        :btns="{
+          info: true,
+          cart: true,
+          delete: false,
+          like: true
+        }"
+      />
     </div>
-    <picture class="sale-info__product">
-      <source srcset="@/static/img/sale/carefullyHot.webp" class="sale-info__product-img">
-      <img src="@/static/img/sale/carefullyHot.png" alt="" class="sale-info__product-img">
-    </picture>
-  </section>
-  <app-sort-nav />
-  <div class="products container">
-    <app-product-item-cart
-      v-for="n in 5"
-      :key="n"
-      :btns="{
-        info: true,
-        cart: true,
-        delete: false,
-        like: true
-      }"
-    />
   </div>
-</div>
 </template>
 
 <script>
@@ -45,6 +46,24 @@ import AppSortNav from '@/components/SortNav'
 import AppProductItemCart from '@/components/ProductItemCart'
 export default {
   name: 'catalog',
+  // transition: {
+  //   beforeEnter (el) {
+  //     el.addEventListener('DOMContentLoaded', () => {
+  //       console.log(el, 'beforeEnter')
+  //       alert('beforeEnter')
+  //     })
+  //   },
+  //   beforeLeave (el) {
+  //     el.addEventListener('DOMContentLoaded', () => {
+  //       console.log(el, 'beforeLeave')
+  //       alert('beforeEnter')
+  //     })
+  //   }
+  // },
+  // mounted () {
+  //   this.$store.commit('DISABLE_LOADER')
+  //   this.$store.dispatch('enablesScroll')
+  // },
   components: {
     AppSortNav,
     AppProductItemCart
@@ -180,5 +199,13 @@ export default {
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 30px 0 0 0;
+
+  &-item {
+    margin-bottom: 50px;
+  }
+
+  &-item:nth-child(3n - 1) {
+    margin: 0 15px 50px;
+  }
 }
 </style>

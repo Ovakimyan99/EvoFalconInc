@@ -1,5 +1,5 @@
 <template>
-  <div class="slider-wrapper">
+  <div ref="sliderWrapper" class="slider-wrapper">
     <div class="slider-controller">
       <div class="controller-instruction">
         SHIFT +
@@ -8,13 +8,15 @@
       </div>
       <div class="swith-wrapper">
         <span>SPIN</span>
-        <input type="checkbox" id="switch" ref="switchSpin"><label for="switch">Toggle</label>
+        <input class="swith-wrapper__input" type="checkbox" id="switch" ref="switchSpin">
+        <label class="swith-wrapper__label" for="switch">Toggle</label>
       </div>
     </div>
     <!--3d-slider-->
     <div id="drag-container">
       <div id="spin-container">
         <app-card-carousel
+          class="spin-container__slide"
           v-for="n of 6"
           :key="n"
         />
@@ -55,10 +57,10 @@ export default {
     })
 
     const swithSpin = this.$refs.switchSpin
-    const sliderWrapper = document.querySelector('.slider-wrapper')
-    const odrag = document.getElementById('drag-container')
-    const ospin = document.getElementById('spin-container')
-    const aImg = ospin.getElementsByTagName('figure')
+    const sliderWrapper = this.$refs.sliderWrapper
+    const odrag = sliderWrapper.querySelector('#drag-container')
+    const ospin = sliderWrapper.querySelector('#spin-container')
+    const aImg = ospin.querySelectorAll('figure')
     const aEle = [...aImg] // combine 2 arrays
 
     // Size of images
@@ -66,7 +68,7 @@ export default {
     ospin.style.height = imgHeight + 'px'
 
     // Size of ground - depend on radius
-    const ground = document.getElementById('ground')
+    const ground = sliderWrapper.querySelector('#ground')
     ground.style.width = radius * 3 + 'px'
     ground.style.height = radius * 3 + 'px'
 
@@ -283,13 +285,13 @@ export default {
   }
 }
 
-input[type=checkbox]{
+.swith-wrapper__input {
   height: 0;
   width: 0;
   visibility: hidden;
 }
 
-label {
+.swith-wrapper__label {
   cursor: pointer;
   text-indent: -9999px;
   width: 65px;
@@ -300,7 +302,7 @@ label {
   position: relative;
 }
 
-label:after {
+.swith-wrapper__label:after {
   content: '';
   position: absolute;
   top: 5px;
@@ -312,11 +314,11 @@ label:after {
   transition: 0.3s;
 }
 
-input:checked + label {
+.swith-wrapper__input:checked + .swith-wrapper__label {
   background: #7a83bf;
 }
 
-input:checked + label:after {
+.swith-wrapper__input:checked + .swith-wrapper__label:after {
   left: calc(100% - 5px);
   transform: translateX(-100%);
 }
@@ -344,19 +346,6 @@ input:checked + label:after {
   transform-style: preserve-3d;
   -webkit-transform: rotateX(-10deg);
   transform: rotateX(-10deg);
-}
-
-#drag-container figure {
-  -webkit-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  box-shadow: 0px 0px 16px -4px rgba(0, 0, 0, 60%);
-  background: rgba(46, 45, 45, 0.3);
-  border-radius: 5px;
 }
 
 #ground {

@@ -1,12 +1,12 @@
 <template>
-  <div class="loading-wrapper">
+  <div class="loading-wrapper" v-if="loading">
     <div class='body'>
-    <span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-    </span>
+      <span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
       <div class='base'>
         <span></span>
         <div class='face'></div>
@@ -24,8 +24,18 @@
 
 <script>
 export default {
-  beforeMount () {
-    this.$store.dispatch('disableScroll')
+  data: () => ({
+    loading: false
+  }),
+  methods: {
+    start () {
+      this.loading = true
+      console.log('начало')
+    },
+    finish () {
+      this.loading = false
+      console.log('конец')
+    }
   }
 }
 </script>

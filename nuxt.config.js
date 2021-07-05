@@ -12,6 +12,9 @@ export default {
     ]
   },
 
+  // loader
+  loading: '~/components/Loader.vue',
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '@/static/css/reset.css',

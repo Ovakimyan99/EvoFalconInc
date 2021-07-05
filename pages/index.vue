@@ -1,9 +1,5 @@
 <template>
   <main class="main">
-    <!--loader-->
-    <app-loader v-if="this.$store.getters.loader" />
-    <!--loader-->
-
     <!--first screen-->
     <div class="container-flex first-screen">
       <section :id="this.sliderCardData.id" ref="poster" class="poster container" :data-id="this.sliderCardData.id">
@@ -154,14 +150,12 @@
 <script>
 import AppThreeDCarousel from '@/components/3DIndexSlider'
 import AppCardInfoModal from '@/components/CardInfoModal'
-import AppLoader from '@/components/Loader'
 import AppRedButton from '@/components/RedBtn'
 import 'animate.css'
 
 export default {
   components: {
     AppCardInfoModal,
-    AppLoader,
     AppThreeDCarousel,
     AppRedButton
   },
@@ -244,7 +238,7 @@ export default {
     }
   },
   async beforeMount () {
-    await this.$store.dispatch('disableScroll')
+    // await this.$store.dispatch('disableScroll')
 
     // начало махинайций с выводом данных
     await this.$store.dispatch('indexFirstScreen', './db.json')
@@ -267,12 +261,13 @@ export default {
     // конец махинаций с выводом данных
   },
   mounted () {
-    // выключаем лоадер, когда загрузилось все
-    // Loader
-    this.$refs.answers.querySelector('.other-answers__text').hidden = false
-    this.$store.commit('DISABLE_LOADER')
-    this.$store.dispatch('enablesScroll')
-    // Loader --
+    window.addEventListener('load', function () {
+      this.$refs.answers.querySelector('.other-answers__text').hidden = false
+      this.$nextTick(() => {
+        this.$nuxt.$loading.start()
+        setTimeout(() => this.$nuxt.$loading.finish(), 100)
+      })
+    })
   },
   methods: {
     CardInfoModal (e) {
