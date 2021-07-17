@@ -130,32 +130,15 @@
         </div>
       </div>
     </div>
-
-    <app-card-info-modal
-      v-if="openCloseModal"
-      ref="threeDModal"
-      v-model="openCloseModal"
-      class="animate__zoomIn"
-      :item="itemData.name"
-      :btns="{
-        volume: null,
-        close: true,
-        like: true,
-        basket: true
-      }"
-    />
   </main>
 </template>
 
 <script>
 import AppThreeDCarousel from '@/components/3DIndexSlider'
-import AppCardInfoModal from '@/components/CardInfoModal'
 import AppRedButton from '@/components/RedBtn'
-import 'animate.css'
 
 export default {
   components: {
-    AppCardInfoModal,
     AppThreeDCarousel,
     AppRedButton
   },
@@ -224,27 +207,25 @@ export default {
     }
   },
   computed: {
-    openCloseModal () {
-      return this.$store.getters.get3DModalCard
-    },
-    cardsArr () {
-      return this.$store.getters.cardsArr
+    clothesArr () {
+      return this.$store.getters.clothesArr
     },
     slideDropDate () {
       return this.$store.getters.dropDate
     },
     timeLeft () {
       return this.$store.getters.timeLeft
+    },
+    itemInfo () {
+      return this.$store.getters.itemInfo
     }
   },
   async beforeMount () {
-    // await this.$store.dispatch('disableScroll')
-
-    // начало махинайций с выводом данных
-    await this.$store.dispatch('indexFirstScreen', './db.json')
+    // получить данные, затем запихнуть их в
+    await this.$store.dispatch('draftingArrClothes', './db.json')
 
     // nearestDrop
-    for (const card of this.cardsArr) {
+    for (const card of this.clothesArr) {
       this.realDate = Date.parse(card.dropDate) - Date.parse(new Date())
 
       if (this.realDate > 0) {
@@ -259,15 +240,6 @@ export default {
       }
     }
     // конец махинаций с выводом данных
-  },
-  mounted () {
-    window.addEventListener('load', function () {
-      this.$refs.answers.querySelector('.other-answers__text').hidden = false
-      this.$nextTick(() => {
-        this.$nuxt.$loading.start()
-        setTimeout(() => this.$nuxt.$loading.finish(), 100)
-      })
-    })
   },
   methods: {
     CardInfoModal (e) {
@@ -293,8 +265,8 @@ export default {
       // a = [b, b = a][0];
     },
     newPoster (e) {
-      // this.cardsArr - массив из шины со всеми карточками
-      this.cardsArr.find((item, index, array) => {
+      // this.clothesArr - массив из шины со всеми карточками
+      this.clothesArr.find((item, index, array) => {
         if (item.id === this.sliderCardData.id) {
           if (e === 'next' && array[index + 1]) {
             this.sliderCardData = array[index + 1]

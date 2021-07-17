@@ -6,6 +6,19 @@
     <app-header-nav />
     <Nuxt />
     <app-footer-nav />
+
+    <app-card-info-modal
+      v-if="itemInfo"
+      ref="threeDModal"
+      class="animate__zoomIn"
+      :btns="{
+        info: false,
+        close: true,
+        like: true,
+        basket: true
+      }"
+      :item="itemInfo"
+    />
   </div>
 </template>
 
@@ -13,26 +26,33 @@
 import AppHeaderNav from '@/components/HeaderNav'
 import AppFooterNav from '@/components/Footer'
 import AppLoader from '@/components/Loader'
+import AppCardInfoModal from '@/components/CardInfoModal'
 
 export default {
-  components: { AppHeaderNav, AppFooterNav, AppLoader },
+  components: { AppHeaderNav, AppFooterNav, AppLoader, AppCardInfoModal },
+  computed: {
+    clothesArr () {
+      return this.$store.getters.clothesArr
+    },
+    itemInfo () {
+      return this.$store.getters.itemInfo
+    }
+  },
   transition: {
     name: 'loader',
     mode: '',
     afterLeave () {
-      console.log('leave')
       this.$store.dispatch('disableScroll')
       this.$store.commit('ENABLE_LOADER')
     },
-    enter (el) {
-      console.log('enter')
+    async enter () {
       this.$store.dispatch('enablesScroll')
       this.$store.commit('DISABLE_LOADER')
+      await this.$store.dispatch('draftingArrClothes', './db.json')
     }
   },
-  mounted () {
-    // this.$store.commit('DISABLE_LOADER')
-    // this.$store.dispatch('enablesScroll')
+  async mounted () {
+    await this.$store.dispatch('draftingArrClothes', './db.json')
   }
 }
 </script>

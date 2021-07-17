@@ -1,28 +1,33 @@
 <template>
-  <div class="modal">
+  <div
+    class="modal"
+  >
     <div class="lookbook">
       <app-btns-card
         :btns="{
+          info: false,
+          delete: false,
           close: true,
-          volume: false,
           like: true,
-          basket: true
+          cart: true
         }"
       />
       <div class="poster">
-        <img src="../static/img/lykbyk/hoody-kaneki/1.jpg" alt="a">
-        <img src="../static/img/lykbyk/hoody-kaneki/2.jpg" alt="a">
-        <img src="../static/img/lykbyk/hoody-kaneki/3.jpg" alt="a">
-        <img src="../static/img/lykbyk/hoody-kaneki/4.jpg" alt="a">
-        <img src="../static/img/lykbyk/hoody-kaneki/5.jpg" alt="a">
-        <img src="../static/img/lykbyk/hoody-kaneki/6.jpg" alt="a">
-        <img src="../static/img/lykbyk/hoody-kaneki/7.jpg" alt="a">
+        <img
+          v-for="item of this.card.feedback"
+          :key="item.name"
+          :src="item.img[0]"
+          :alt="item.name"
+          :title="item.name"
+        >
       </div>
     </div>
     <div class="stack">
       <section class="content card">
-        <p><b><h2 id="desktop-prompt">Наведи</h2><span id="mobile-prompt">Нажми</span>на меня!</b></p>
-        <p>HOODIE «EMPTINESS OF THE SOUL» VOL.01</p>
+        <p>
+          <b><span id="desktop-prompt">Наведи</span><span id="mobile-prompt">Нажми</span>на меня!</b>
+        </p>
+        <p>{{ this.card.name }}</p>
       </section>
       <div class="padding card" />
       <div class="border card" />
@@ -36,22 +41,20 @@
 import AppBtnsCard from './VolumeLikeBasketClose'
 
 export default {
+  components: {
+    AppBtnsCard
+  },
   props: ['item', 'btns'],
   data () {
     return {
       card: this.item
     }
   },
-  components: {
-    AppBtnsCard
-  },
   methods: {}
 }
 </script>
 
 <style lang="scss" scoped>
-@import "plugins/incons.css";
-
 .modal{
   position: fixed;
   z-index: 15;

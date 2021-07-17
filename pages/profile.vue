@@ -29,13 +29,18 @@
           class="products-list__item"
           v-for="item of 7"
           :key="item"
-          :btns="{
-            info: true,
-            cart: false,
-            delete: true,
-            like: true
-          }"
-        />
+        >
+          <app-btns-card
+            :btns="{
+              close: false,
+              cart: false,
+              info: true,
+              delete: true,
+              like: true
+            }"
+            volume="2d"
+          />
+        </app-product-item-cart>
       </div>
       <ul class="products-finally">
         <li class="products-finally__info">
@@ -58,13 +63,18 @@
           class="products-list__item"
           v-for="item of 7"
           :key="item"
-          :btns="{
-            info: true,
-            cart: true,
-            delete: true,
-            like: false
-          }"
-        />
+        >
+          <app-btns-card
+            :btns="{
+              close: false,
+              like: false,
+              delete: true,
+              cart: true,
+              info: true
+            }"
+            volume="2d"
+          />
+        </app-product-item-cart>
       </div>
     </div>
     <div class="products products--maybe-like-it">
@@ -73,13 +83,18 @@
           class="products-list__item"
           v-for="item of 7"
           :key="item"
-          :btns="{
-            info: true,
-            cart: true,
-            delete: false,
-            like: true
-          }"
-        />
+        >
+          <app-btns-card
+            :btns="{
+              delete: false,
+              close: false,
+              info: true,
+              cart: true,
+              like: true
+            }"
+            volume="2d"
+          />
+        </app-product-item-cart>
       </div>
     </div>
 
@@ -96,10 +111,13 @@
 
 <script>
 import AppProductItemCart from '@/components/ProductItemCart'
+import AppBtnsCard from '@/components/VolumeLikeBasketClose'
+
 export default {
   name: 'Profile',
   components: {
-    AppProductItemCart
+    AppProductItemCart,
+    AppBtnsCard
   },
   data: () => ({
     userInfo: [

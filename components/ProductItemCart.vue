@@ -2,13 +2,15 @@
   <div class="product-wrapper">
     <picture class="product-img-wrapper">
 <!--      <source srcset="@/static/img/7.webp" class="product-img">-->
-      <img src="@/static/img/hoody-kaneki/7.jpg" class="product-img" alt="">
+      <img
+        v-if="this.card"
+        :src="this.card.imageUrl"
+        class="product-img"
+        :alt="this.card.name"
+      >
     </picture>
-    <div class="product-btn-wrapper" @click="productBtnClick($event)">
-      <input type="button" class="product-btn info" v-if="this.btns.info">
-      <button class="product-btn basket icon-cart" v-if="this.btns.cart" />
-      <button class="product-btn delete icon-bascet" v-if="this.btns.delete" />
-      <button class="product-btn liked" v-if="this.btns.like">❤</button>
+    <div class="product-btn-wrapper">
+      <slot />
     </div>
   </div>
 </template>
@@ -16,15 +18,7 @@
 <script>
 export default {
   name: 'productItemCart',
-  props: ['btns'],
-  methods: {
-    productBtnClick (e) {
-      const target = e.target
-      if (target.classList.contains('product-btn')) {
-        target.classList.toggle('active')
-      }
-    }
-  }
+  props: ['card']
 }
 </script>
 

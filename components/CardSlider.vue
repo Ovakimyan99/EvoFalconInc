@@ -14,18 +14,22 @@
         </div>
         <app-btns-card
           :btns="{
-            close: null,
-            volume: true,
+            close: false,
+            delete: false,
+            info: true,
             like: true,
-            basket: true
+            cart: true
           }"
-        /></div>
+          volume="3d"
+        />
+      </div>
     </div>
   </figure>
 </template>
 
 <script>
 import AppBtnsCard from './VolumeLikeBasketClose'
+
 export default {
   data: () => {
     return {}

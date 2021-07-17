@@ -8,7 +8,9 @@
       <div class="sale-info sale-info--fon">
         <span class="sale-info__contents">АКЦИЯ / SALE</span>
         <i class="sale-info__contents--motivator">Заяви о себе по - новому!</i>
-        <h2 class="sale-info__title">Дарим скидку на футболку<br>«CAREFULLY HOT»</h2>
+        <h2 class="sale-info__title">
+          Дарим скидку на футболку<br>«CAREFULLY HOT»
+        </h2>
         <div class="sale-info__special-offer">
           <div class="sale-info__timer--wrapper">
             <span>До конца акции</span>
@@ -16,7 +18,9 @@
               14 : 21: 17: 20
             </time>
           </div>
-          <button type="button" data-sale="10%" class="sale-info__btn">забрать скидку <span>10%</span></button>
+          <button type="button" data-sale="10%" class="sale-info__btn">
+            забрать скидку <span>10%</span>
+          </button>
         </div>
       </div>
       <picture class="sale-info__product">
@@ -25,18 +29,28 @@
       </picture>
     </section>
     <app-sort-nav />
-    <div class="products container">
+    <div
+      v-if="this.clothesArr"
+      class="products container"
+    >
       <app-product-item-cart
+        v-for="item in this.clothesArr"
+        :key="item.name"
         class="products-item"
-        v-for="n in 5"
-        :key="n"
-        :btns="{
-          info: true,
-          cart: true,
-          delete: false,
-          like: true
-        }"
-      />
+        :data-id="item.id"
+        :card="item"
+      >
+        <app-btns-card
+          :btns="{
+            info: true,
+            cart: true,
+            like: true,
+            delete: false,
+            close: false
+          }"
+          volume="2d"
+        />
+      </app-product-item-cart>
     </div>
   </div>
 </template>
@@ -44,29 +58,22 @@
 <script>
 import AppSortNav from '@/components/SortNav'
 import AppProductItemCart from '@/components/ProductItemCart'
+import AppBtnsCard from '@/components/VolumeLikeBasketClose'
+
 export default {
-  name: 'catalog',
-  // transition: {
-  //   beforeEnter (el) {
-  //     el.addEventListener('DOMContentLoaded', () => {
-  //       console.log(el, 'beforeEnter')
-  //       alert('beforeEnter')
-  //     })
-  //   },
-  //   beforeLeave (el) {
-  //     el.addEventListener('DOMContentLoaded', () => {
-  //       console.log(el, 'beforeLeave')
-  //       alert('beforeEnter')
-  //     })
-  //   }
-  // },
-  // mounted () {
-  //   this.$store.commit('DISABLE_LOADER')
-  //   this.$store.dispatch('enablesScroll')
-  // },
+  name: 'Catalog',
   components: {
     AppSortNav,
-    AppProductItemCart
+    AppProductItemCart,
+    AppBtnsCard
+  },
+  computed: {
+    clothesArr () {
+      return this.$store.getters.clothesArr
+    }
+  },
+  mounted () {
+    console.log()
   }
 }
 </script>

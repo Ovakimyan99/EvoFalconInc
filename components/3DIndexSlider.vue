@@ -17,7 +17,7 @@
       <div id="spin-container">
         <app-card-carousel
           class="spin-container__slide"
-          v-for="n of 6"
+          v-for="n of 2"
           :key="n"
         />
         <!-- Text at center of ground -->
@@ -171,15 +171,15 @@ export default {
     }
 
     sliderWrapper.querySelectorAll('.carouselItem').forEach((item) => {
-      const headerIcon = item.querySelector('.poster__header-icon')
-      headerIcon.addEventListener('mousemove', () => {
-        playSpin(false)
-      })
-      headerIcon.addEventListener('mouseleave', () => {
-        if (!switchSpinBoolean) {
-          playSpin(true)
-        }
-      })
+      // const headerIcon = item.querySelector('.poster__header-icon')
+      // headerIcon.addEventListener('mousemove', () => {
+      //   playSpin(false)
+      // })
+      // headerIcon.addEventListener('mouseleave', () => {
+      //   if (!switchSpinBoolean) {
+      //     playSpin(true)
+      //   }
+      // })
     })
 
     sliderWrapper.onmousewheel = function (e) {

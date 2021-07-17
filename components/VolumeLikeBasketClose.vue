@@ -1,75 +1,59 @@
 <template>
-  <div class="poster__header-icon" @click="productChange($event)">
-    <span
-      v-if="this.btn.volume"
-      class="header-icon header-icon__3d"
+  <div>
+    <button
+      v-if="this.btns.info"
+      class="info"
+      :class="this.btnsClass"
       @click="ThreeDModal($event)"
-      :class="{'modal-icons': this.btns.close, 'card-icons': this.btns.volume}"
-    >
-      <i />
-    </span>
-    <span
-      v-if="this.btn.close"
-      class="header-icon header-icon__close"
-      @click="closeModal"
-      :class="{'modal-icons': this.btns.close, 'card-icons': this.btns.volume}"
-    >
-      &#10006;
-    </span>
-    <span
-      v-if="this.btn.like"
-      class="header-icon header-icon__like"
-      :class="{'modal-icons': this.btns.close, 'card-icons': this.btns.volume}"
-    >
-      ❤
-    </span>
-    <span
-      v-if="this.btn.basket"
-      class="header-icon header-icon__basket"
-      :class="{'modal-icons': this.btns.close, 'card-icons': this.btns.volume}"
-    >
-      <i class="icon-cart" />
-    </span>
+    >3D</button>
+    <button
+      v-if="this.btns.close"
+      class="close"
+      :class="this.btnsClass"
+    >&#10006;</button>
+    <button
+      v-if="this.btns.cart"
+      class="basket icon-cart"
+      :class="this.btnsClass"
+    />
+    <button
+      v-if="this.btns.delete"
+      class="delete icon-bascet"
+      :class="this.btnsClass"
+    />
+    <button
+      v-if="this.btns.like"
+      class="product-btn liked"
+      :class="this.btnsClass"
+    >❤</button>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['item', 'btns'],
+  props: ['item', 'btns', 'volume'],
   data () {
     return {
       card: this.item,
       btn: this.btns
     }
   },
+  computed: {
+    btnsClass () {
+      if (this.volume === '2d') {
+        return 'product-btn'
+      } else {
+        return 'header-icon'
+      }
+    }
+  },
   methods: {
     closeModal () {
-      this.$store.commit('CHANGE_3D_MODAL', false)
+      this.$store.commit('EXISTENCE_ITEM', false)
       this.$store.dispatch('enablesScroll')
     },
-    productChange (e) {
-      const target = e.target
-
-      if (target.closest('.header-icon') && !target.closest('.header-icon__3d')) {
-        target.closest('.header-icon').classList.toggle('active')
-      }
-    },
     ThreeDModal (e) {
-      new Promise((resolve) => {
-        this.$store.commit('ENABLE_LOADER')
-        setTimeout(() => { resolve() }, 2000)
-      })
-        .then(() => {
-          const parentCard = e.target.closest('[data-id]')
-          console.log(parentCard)
-          // this.item = parentCard.id
-          this.$store.commit('CHANGE_3D_MODAL', true)
-          this.$store.dispatch('disableScroll')
-          this.$store.commit('DISABLE_LOADER')
-        })
-        .catch(() => {
-          throw Error
-        })
+      this.$store.dispatch('CardInfoModal', e)
     }
   }
 }
