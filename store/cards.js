@@ -27,8 +27,6 @@ export default {
     },
     CardInfoModal ({ commit, getters }, event) {
       try {
-        // debugger
-
         const parentCard = event.target.closest('[data-id]').getAttribute('data-id') // card id
 
         const item = getters.clothesArr.find(obj => obj.id === parentCard)

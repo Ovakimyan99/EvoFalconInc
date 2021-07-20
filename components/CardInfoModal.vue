@@ -11,6 +11,7 @@
           like: true,
           cart: true
         }"
+        volume="lookbook"
       />
       <div class="poster">
         <img
@@ -76,6 +77,7 @@ export default {
     overflow: hidden;
     overflow-y: scroll;
     margin-left: 0;
+    margin-top: 15px;
     padding-right: 10px;
 
     &:before{
@@ -109,8 +111,9 @@ export default {
   background: #252525;
   padding: 20px;
 
-  & .poster__header-icon {
-    padding-left: 0;
+  & .header-icon {
+    width: 45px !important;
+    height: 45px !important;
   }
 }
 

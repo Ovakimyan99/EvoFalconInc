@@ -1,15 +1,19 @@
 <template>
-  <div>
+  <div
+    class="product-btn-wrapper"
+    @click="activeChange($event)"
+  >
     <button
       v-if="this.btns.info"
       class="info"
       :class="this.btnsClass"
       @click="ThreeDModal($event)"
-    >3D</button>
+    ><img src="@/static/img/other/cartItem/info.svg" alt="3д"></button>
     <button
       v-if="this.btns.close"
       class="close"
       :class="this.btnsClass"
+      @click="closeModal"
     >&#10006;</button>
     <button
       v-if="this.btns.cart"
@@ -23,7 +27,7 @@
     />
     <button
       v-if="this.btns.like"
-      class="product-btn liked"
+      class="liked"
       :class="this.btnsClass"
     >❤</button>
   </div>
@@ -42,9 +46,12 @@ export default {
     btnsClass () {
       if (this.volume === '2d') {
         return 'product-btn'
-      } else {
+      } else if (this.volume === '3d') {
         return 'header-icon'
+      } else if (this.volume === 'lookbook') {
+        return 'header-icon header-icon--lookbook'
       }
+      return ''
     }
   },
   methods: {
@@ -54,22 +61,23 @@ export default {
     },
     ThreeDModal (e) {
       this.$store.dispatch('CardInfoModal', e)
+    },
+    activeChange (e) {
+      const target = e.target.closest('.product-btn') || e.target.closest('.header-icon')
+      if (target) {
+        target.classList.toggle('active')
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import "plugins/incons.css";
-
 @mixin modalIcon($color, $background) {
-  color: rgba(46, 45, 45, 0.3);
   &.active, &:hover {
     transform: translateY(-3px);
     box-shadow: 0 11px 22px -7px $color;
     background: $background;
-    opacity: 1;
-    color: #fff;
   }
 
   &:active {
@@ -77,18 +85,23 @@ export default {
   }
 }
 
-.poster__header-icon {
+@mixin btnBg ($color) {
+  &:hover {
+    background-color: $color;
+  }
+  &.active {
+    background-color: $color;
+  }
+}
+
+.product-btn-wrapper {
   display: flex;
   justify-content: flex-end;
 }
 
-.modal-icons {
-  margin-right: 20px;
-  font-size: 21px;
-  width: 46px;
-  height: 46px;
-  color: #f5f3f5 !important;
-  background: #a09898;
+.poster__header-icon {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .card-icons {
@@ -105,36 +118,77 @@ export default {
   transition: 0.3s ease;
   border-radius: 50%;
   cursor: pointer;
+  margin-right: 8px;
+  font-size: 16px;
+  width: 33px;
+  height: 33px;
+  color: #f5f3f5;
+  background: #534d4d;
+
+  &--lookbook {
+    font-size: 22px;
+    width: 50px;
+    height: 50px;
+  }
 
   &:last-child {
     margin-right: 0;
   }
 
-  &__basket {
+  &.basket {
     @include modalIcon(#fdcf58, #e9c363)
   }
 
-  &__like{
+  &.liked{
     @include modalIcon(#ff0081, #ee1e87)
   }
 
-  &__close {
+  &.close {
     @include modalIcon(#000, #433e3e)
   }
 
-  &__3d {
-    @include modalIcon(rgba(0,212,255,0.95), linear-gradient(0deg, rgba(10,4,117,0.95) 0%, rgba(9,9,121,0.82) 3%, rgba(5,103,183,0.97) 36%, rgba(0,212,255,0.9587185215883228) 75%, rgba(175,255,253,0.9643207624846813) 100%));
-    i {
-      width: 66%;
-      height: 66%;
-      background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgNDkxLjIwMyA0OTEuMjAzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0OTEuMjAzIDQ5MS4yMDM7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxnPg0KCTxnPg0KCQk8cGF0aCBkPSJNNDg3LjI5OCwzMjYuNzMzbC02Mi4zMDQtMzcuMTI4bDYyLjMwNC0zNy4xMjhjMi40MjEtMS40NDMsMy45MDQtNC4wNTQsMy45MDQtNi44NzJzLTEuNDgzLTUuNDI5LTMuOTA0LTYuODcyDQoJCQlsLTYyLjMwNC0zNy4xMjhsNjIuMzA0LTM3LjEyOGMzLjc5NS0yLjI2Miw1LjAzOC03LjE3MiwyLjc3Ni0xMC45NjhjLTAuNjgtMS4xNDItMS42MzUtMi4wOTYtMi43NzYtMi43NzZsLTIzNy42LTE0MS42DQoJCQljLTIuNTI0LTEuNTA0LTUuNjY5LTEuNTA0LTguMTkyLDBsLTIzNy42LDE0MS42Yy0zLjc5NSwyLjI2Mi01LjAzOCw3LjE3Mi0yLjc3NiwxMC45NjhjMC42OCwxLjE0MiwxLjYzNSwyLjA5NiwyLjc3NiwyLjc3Ng0KCQkJbDYyLjMwNCwzNy4xMjhMMy45MDUsMjM4LjczM2MtMy43OTUsMi4yNjItNS4wMzgsNy4xNzItMi43NzYsMTAuOTY4YzAuNjgsMS4xNDIsMS42MzUsMi4wOTYsMi43NzYsMi43NzZsNjIuMzA0LDM3LjEyOA0KCQkJTDMuOTA1LDMyNi43MzNjLTMuNzk1LDIuMjYyLTUuMDM4LDcuMTcyLTIuNzc2LDEwLjk2OGMwLjY4LDEuMTQyLDEuNjM1LDIuMDk2LDIuNzc2LDIuNzc2bDIzNy42LDE0MS42DQoJCQljMi41MjYsMS40OTQsNS42NjYsMS40OTQsOC4xOTIsMGwyMzcuNi0xNDEuNmMzLjc5NS0yLjI2Miw1LjAzOC03LjE3MiwyLjc3Ni0xMC45NjgNCgkJCUM0ODkuMzkzLDMyOC4zNjgsNDg4LjQzOSwzMjcuNDE0LDQ4Ny4yOTgsMzI2LjczM3ogTTIzLjYyNSwxNTcuNjA1TDI0NS42MDEsMjUuMzE3bDIyMS45NzYsMTMyLjI4OEwyNDUuNjAxLDI4OS44OTMNCgkJCUwyMy42MjUsMTU3LjYwNXogTTIzLjYyNSwyNDUuNjA1bDU4LjIwOC0zNC42OGwxNTkuNjcyLDk1LjJjMi41MjQsMS41MDQsNS42NjgsMS41MDQsOC4xOTIsMGwxNTkuNjcyLTk1LjJsNTguMjA4LDM0LjY4DQoJCQlMMjQ1LjYwMSwzNzcuODkzTDIzLjYyNSwyNDUuNjA1eiBNMjQ1LjYwMSw0NjUuODkzTDIzLjYyNSwzMzMuNjA1bDU4LjIwOC0zNC42OGwxNTkuNjcyLDk1LjJjMi41MjQsMS41MDQsNS42NjgsMS41MDQsOC4xOTIsMA0KCQkJbDE1OS42NzItOTUuMmw1OC4yMDgsMzQuNjhMMjQ1LjYwMSw0NjUuODkzeiIvPg0KCTwvZz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjwvc3ZnPg0K)
+  &.info {
+    @include modalIcon(#8E3C71, #a54784);
+    padding: 6px;
+    img {
+      width: 100%;
     }
+  }
+}
 
-    &:hover {
-      i {
-        mix-blend-mode: overlay;
-      }
+.product-btn {
+  flex: 1;
+  padding: 25px 10px;
+  background-repeat: no-repeat;
+  background-size: 35px;
+  background-position: center;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  background-color: #404040;
+
+  &:hover {
+    filter: grayscale(0);
+  }
+
+  &.delete {
+    @include btnBg(#7A83BF);
+    background-size: 25px;
+  }
+
+  &.liked {
+    @include btnBg(#FF0081);
+  }
+
+  &.info {
+    @include btnBg(#8E3C71);
+    img {
+      width: 40%;
     }
+  }
+
+  &.basket {
+    @include btnBg(#FEDB01)
   }
 }
 </style>

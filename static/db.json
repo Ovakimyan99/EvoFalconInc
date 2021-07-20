@@ -1,19 +1,25 @@
 [
   {
     "id": "hhhyyy001",
-    "name": "HOODIE «EMPTINESS OF THE SOUL» VOL.01",
-    "imageUrl": "./img/hoody-kaneki/mockup.png",
-    "imageBackUrl": "./img/hoody-kaneki/mockupBack.jpg",
-    "printDesign": "./img/..",
-    "substrateUrl": "./img/licoricewhite.png",
-    "priceDrop": "4300",
-    "pricePreorder": "3800",
-    "salePrice": "0",
-    "saleDate": "дата окончания акции",
-    "dropDate": "2021-07-30",
-    "barker": "для тех, кто знает сколько будет 1000 - 7",
-    "clothes": "hoodie",
     "anime": "tokyo ghoul",
+    "clothes": "hoodie",
+    "name": "HOODIE «EMPTINESS OF THE SOUL» VOL.01",
+    "dropDate": "2021-07-30",
+    "mockups": {
+      "main": "./img/hoody-kaneki/mockup.png",
+      "back": "./img/hoody-kaneki/mockupBack.jpg",
+      "substrate": "./img/licoricewhite.png"
+    },
+    "price": {
+      "drop":  4300,
+      "preorder": 3800
+    },
+    "sale": {
+      "price": 0,
+      "date": "дата окончания акции",
+      "print": "./img/.."
+    },
+    "barker": "для тех, кто знает сколько будет 1000 - 7",
     "text": "Испоьлзуется оверсайз крой, с нашивками из джинсы и прямой полноцветной печатью.",
     "info": [
       "Оверсайз крой",

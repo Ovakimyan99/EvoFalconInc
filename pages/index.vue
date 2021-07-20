@@ -2,45 +2,56 @@
   <main class="main">
     <!--first screen-->
     <div class="container-flex first-screen">
-      <section :id="this.sliderCardData.id" ref="poster" class="poster container" :data-id="this.sliderCardData.id">
+      <section ref="poster" class="poster container" :data-id="this.sliderCard.id">
         <div class="poster-slider">
+
+          <!--подложка-->
           <div class="slider-border">
-            <img :src="this.sliderCardData.substrateUrl" alt="подложка">
+            <img :src="this.sliderCard.mockups.substrate" alt="подложка">
           </div>
+
+          <!--мокап картинки-->
           <img
             class="poster-slider__img animate__animated"
-            :src="this.urlImgFrontAndBack[0]"
-            :alt="this.sliderCardData.name"
-            :title="this.sliderCardData.name"
+            :v-model="this.imgFrontAndBack"
+            :src="this.imgFrontAndBack[0]"
+            :alt="this.sliderCard.name"
+            :title="this.sliderCard.name"
           >
-          <img
-            hidden
-            class="poster-slider__img animate__animated poster-slider__img-substrate"
-            :src="this.urlImgFrontAndBack[1]"
-            :alt="this.sliderCardData.name"
-            :title="this.sliderCardData.name"
-          >
+
+          <!--стрелки смены слайдера-->
           <div class="poster-slider-nav">
             <span @click="newPoster($event = 'prev')"><app-red-button data-dark :text="'❮'" class="slider-nav-btn" /></span>
             <span @click="revertCard($event)"><app-red-button data-dark :text="'перевернуть'" /></span>
             <span @click="newPoster($event = 'next')"><app-red-button data-dark :text="'❯'" class="slider-nav-btn" /></span>
           </div>
         </div>
+
+        <!--текстовая часть - информация-->
         <div class="poster-info">
+          <!--заглавие-->
           <h1 class="poster-info__title">
-            {{ this.sliderCardData.name }}
+            {{ this.sliderCard.name }}
           </h1>
+
+          <!--описание-->
           <div class="poster__descr">
+            <!--текст-->
             <p class="poster__text">
-              {{ this.sliderCardData.text }}
+              {{ this.sliderCard.text }}
             </p>
+            <!--краткие пункты-->
             <ul class="poster__text poster__list">
-              <li v-for="li of this.sliderCardData.info" :key="li">
+              <li v-for="li of this.sliderCard.info" :key="li">
                 {{ li }}
               </li>
             </ul>
           </div>
+
+          <!--время и цена-->
           <div class="poster__descr">
+
+            <!--времени осталось до дропа-->
             <div class="poster__timer">
               <span class="timer-countdown">До дропа осталось:</span>
               <time v-if="this.timeLeft && this.timeLeft > 0" class="timer">
@@ -61,11 +72,15 @@
                 released
               </div>
             </div>
+
+            <!--цена-->
             <div class="poster-price">
-              <span>{{ this.sliderCardData.priceDrop }}</span>
-              <span v-if="this.realDate > 0">{{ this.sliderCardData.pricePreorder }}</span>
+              <span>{{ this.sliderCard.price.drop }}</span>
+              <span v-if="this.realDate > 0">{{ this.sliderCard.price.preorder }}</span>
             </div>
           </div>
+
+          <!--кнопка подробнее и товаров в наличии-->
           <div class="poster__descr">
             <span class="sold-out">SOLD OUT</span>
             <span @click="CardInfoModal($event)"><app-red-button :text="'ПОДРОБНЕЕ'" /></span>
@@ -96,11 +111,11 @@
           </h3>
         </article>
         <article class="delivery-info">
-        <img src="@/static/img/other/delivery/city.svg" alt="Самовывоз в МСК" class="delivery-info__img">
-        <h3 class="delivery-info__text">
-          самовывоз<br>в москве
-        </h3>
-      </article>
+          <img src="@/static/img/other/delivery/city.svg" alt="Самовывоз в МСК" class="delivery-info__img">
+          <h3 class="delivery-info__text">
+            самовывоз<br>в москве
+          </h3>
+        </article>
       </div>
       <div class="delivery-descr">
         <p class="delivery-descr__text">Отправка товара производится в течение 3-4 дней после оплаты, если товар есть в наличии, то есть исключения - это товары на стадии предзаказов.</p>
@@ -144,10 +159,8 @@ export default {
   },
   data () {
     return {
-      itemData: null,
-      sliderCardData: {},
-      urlImgFrontAndBack: [],
-      threeDCarousel: false,
+      sliderCard: {},
+      imgFrontAndBack: [],
       realDate: null,
       questionAnswer: [
         {
@@ -210,9 +223,6 @@ export default {
     clothesArr () {
       return this.$store.getters.clothesArr
     },
-    slideDropDate () {
-      return this.$store.getters.dropDate
-    },
     timeLeft () {
       return this.$store.getters.timeLeft
     },
@@ -220,73 +230,34 @@ export default {
       return this.$store.getters.itemInfo
     }
   },
-  async beforeMount () {
-    // получить данные, затем запихнуть их в
-    await this.$store.dispatch('draftingArrClothes', './db.json')
-
-    // nearestDrop
-    for (const card of this.clothesArr) {
-      this.realDate = Date.parse(card.dropDate) - Date.parse(new Date())
-
-      if (this.realDate > 0) {
-        this.itemData = await JSON.parse(JSON.stringify(card))
-        this.sliderCardData = await JSON.parse(JSON.stringify(card))
-        await this.$store.dispatch('timer', this.sliderCardData.dropDate) // undefiend
-        this.urlImgFrontAndBack.push(this.itemData.imageUrl, this.itemData.imageBackUrl)
-
-        break
-      } else {
-        console.log('нет нового товара, все')
-      }
-    }
-    // конец махинаций с выводом данных
-  },
   methods: {
     CardInfoModal (e) {
       this.$store.dispatch('CardInfoModal', e)
     },
-    revertCard (e) {
-      // фотография, которую надо менять
-      const imgFrontAndBack = this.$refs.poster.querySelectorAll('.poster-slider__img')
-
-      for (const img of imgFrontAndBack) {
-        if (!img.hidden) {
-          img.hidden = true
-        } else {
-          img.hidden = false
-        }
-      }
-
-      // меняю в html местами изображения, чтобы анимация отрабатывала без новой подгрузки
-      const lastImg = imgFrontAndBack[1]
-      imgFrontAndBack[1].remove()
-      this.$refs.poster.querySelector('.slider-border').insertAdjacentElement('afterend', lastImg)
-
+    revertCard () {
+      this.imgFrontAndBack = [this.imgFrontAndBack[1], this.imgFrontAndBack[0]][0]
       // a = [b, b = a][0];
+    },
+    changeCardAndTime (payload) {
+      this.sliderCard = payload
+      this.realDate = Date.parse(payload.dropDate) - Date.parse(new Date())
+      this.$store.dispatch('timer', payload.dropDate)
     },
     newPoster (e) {
       // this.clothesArr - массив из шины со всеми карточками
       this.clothesArr.find((item, index, array) => {
-        if (item.id === this.sliderCardData.id) {
+        if (item.id === this.sliderCard.id) {
           if (e === 'next' && array[index + 1]) {
-            this.sliderCardData = array[index + 1]
-            this.realDate = Date.parse(array[index + 1].dropDate) - Date.parse(new Date())
-            this.$store.dispatch('timer', array[index + 1].dropDate)
+            this.changeCardAndTime(array[index + 1])
           }
           if (e === 'next' && !array[index + 1]) {
-            this.sliderCardData = array[0]
-            this.realDate = Date.parse(array[0].dropDate) - Date.parse(new Date())
-            this.$store.dispatch('timer', array[0].dropDate)
+            this.changeCardAndTime(array[0])
           }
           if (e === 'prev' && array[index - 1]) {
-            this.sliderCardData = array[index - 1]
-            this.realDate = Date.parse(array[index - 1].dropDate) - Date.parse(new Date())
-            this.$store.dispatch('timer', array[index - 1].dropDate)
+            this.changeCardAndTime(array[index - 1])
           }
           if (e === 'prev' && !array[index - 1]) {
-            this.sliderCardData = array[array.length - 1]
-            this.realDate = Date.parse(array[array.length - 1].dropDate) - Date.parse(new Date())
-            this.$store.dispatch('timer', array[array.length - 1].dropDate)
+            this.changeCardAndTime(array[array.length - 1])
           }
           return item
         }
@@ -316,6 +287,9 @@ export default {
         })
       }
     }
+  },
+  mounted () {
+    this.realDate = Date.parse(this.itemInfo.dropDate) - Date.parse(new Date())
   }
 }
 </script>
